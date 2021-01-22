@@ -18,13 +18,13 @@ def products(request):
     }
 
     try:
-        with open("mainapp/fixtures/products.json", 'r') as f:
+        with open('mainapp/fixtures/products.json', 'r') as f:
             context['products'] = json.loads(f.read())
     except IOError:
         print("Ошибка чтения!")
 
     try:
-        with open("mainapp/fixtures/menu_catalog.json", 'r') as f:
+        with open('mainapp/fixtures/menu_catalog.json', 'r') as f:
             context['menu_catalog'] = json.loads(f.read())
     except IOError:
         print("Ошибка чтения!")
