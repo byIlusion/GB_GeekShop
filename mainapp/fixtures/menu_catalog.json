@@ -1,22 +1,22 @@
 [
     {
-        "title":"Новинки",
-        "url":"#"
+        "name":"Новинки",
+        "description":""
     },
     {
-        "title":"Одежда",
-        "url":"#"
+        "name":"Одежда",
+        "description":""
     },
     {
-        "title":"Обувь",
-        "url":"#"
+        "name":"Обувь",
+        "description":""
     },
     {
-        "title":"Аксессуары",
-        "url":"#"
+        "name":"Аксессуары",
+        "description":""
     },
     {
-        "title":"Подарки",
-        "url":"#"
+        "name":"Подарки",
+        "description":""
     }
 ]
