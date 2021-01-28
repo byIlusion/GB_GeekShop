@@ -26,7 +26,7 @@ def products(request):
                     ProductCategory.objects.create(name=category['name'], description=category['description'])
                 context['categories'] = ProductCategory.objects.all()
         except IOError:
-            print("Ошибка чтения!")
+            print('Ошибка чтения!')
 
     # Если в базе нет товаров, то загружаем из JSON и сохраняем в БД
     if len(context['products']) == 0:
@@ -46,7 +46,7 @@ def products(request):
                     prod.save()
                 context['products'] = Product.objects.all()
         except IOError:
-            print("Ошибка чтения!")
+            print('Ошибка чтения!')
 
     return render(request, 'mainapp/products.html', context=context)
 
