@@ -1,5 +1,4 @@
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
-from django.utils.safestring import mark_safe
 
 from userapp.models import User
 
@@ -40,3 +39,10 @@ class UserRegisterForm(UserCreationForm):
         self.fields['password2'].widget.attrs['placeholder'] = 'Подтвердите пароль'
         for name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control py-4'
+
+    def clean_age(self):
+        age = self.cleaned_data['age']
+        if age > 100:
+            raise forms.ValidationErrors('Вы слишком стары!')
+
+        return age
