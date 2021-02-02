@@ -45,7 +45,6 @@ class UserRegisterForm(UserCreationForm):
         age = self.cleaned_data['age']
         if age > 100:
             raise forms.ValidationErrors('Вы слишком стары!')
-
         return age
 
 

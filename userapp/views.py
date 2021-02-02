@@ -44,10 +44,6 @@ def register(request):
         if form.is_valid():
             form.save()
             return HttpResponseRedirect(reverse('user:login'))
-        else:
-            print(form.errors)
-            for error in form.errors:
-                print(error)
     else:
         form = UserRegisterForm()
 
@@ -74,9 +70,11 @@ def profile(request):
     else:
         form = UserProfileForm(instance=request.user)
 
+    basket = Basket.objects.filter(user=request.user)
     context = {
         'title': f'Профиль пользователя {request.user.username}',
         'form': form,
-        'basket': Basket.objects.filter(user=request.user)
+        'basket': basket,
+        'basket_statistic': Basket.stat(basket),
     }
     return render(request, 'userapp/profile.html', context=context)
