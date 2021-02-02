@@ -1,4 +1,5 @@
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, UserChangeForm
+from django import forms
 
 from userapp.models import User
 
@@ -46,3 +47,24 @@ class UserRegisterForm(UserCreationForm):
             raise forms.ValidationErrors('Вы слишком стары!')
 
         return age
+
+
+class UserProfileForm(UserChangeForm):
+    avatar = forms.ImageField(widget=forms.FileInput(), required=False)
+
+    class Meta:
+        model = User
+        fields = ('avatar', 'first_name', 'last_name', 'username', 'email', 'age')
+    
+    def __init__(self, *args, **kwargs):
+        super(UserProfileForm, self).__init__(*args, **kwargs)
+        for name, field in self.fields.items():
+            field.widget.attrs['class'] = 'form-control py-4'
+        self.fields['avatar'].widget.attrs['class'] = 'custom-file-input'
+        self.fields['avatar'].widget.attrs['required'] = False
+        self.fields['username'].widget.attrs['readonly'] = True
+        self.fields['username'].widget.attrs['aria-describedby'] = 'usernameHelp'
+        self.fields['email'].widget.attrs['readonly'] = True
+        self.fields['email'].widget.attrs['aria-describedby'] = 'emailHelp'
+        self.fields['age'].widget.attrs['aria-describedby'] = 'birthdayHelp'
+        self.fields['age'].widget.attrs['type'] = 'date'

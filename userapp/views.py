@@ -2,7 +2,9 @@ from django.shortcuts import render, HttpResponseRedirect
 from django.contrib import auth
 from django.urls import reverse
 
-from userapp.forms import UserLoginForm, UserRegisterForm
+from userapp.forms import UserLoginForm, UserRegisterForm, UserProfileForm
+
+from basketapp.models import Basket
 
 
 def login(request):
@@ -33,7 +35,6 @@ def logout(request):
 
 
 def register(request):
-    print(request)
     if request.user.is_authenticated:
         return HttpResponseRedirect(reverse('index'))
     
@@ -59,3 +60,23 @@ def register(request):
         'grouped_form': grouped_form
     }
     return render(request, 'userapp/register.html', context=context)
+
+
+def profile(request):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse('index'))
+    
+    if request.method == 'POST':
+        form = UserProfileForm(data=request.POST, files=request.FILES, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('user:profile'))
+    else:
+        form = UserProfileForm(instance=request.user)
+
+    context = {
+        'title': f'Профиль пользователя {request.user.username}',
+        'form': form,
+        'basket': Basket.objects.filter(user=request.user)
+    }
+    return render(request, 'userapp/profile.html', context=context)
