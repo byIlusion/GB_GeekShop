@@ -2,23 +2,26 @@ from django.shortcuts import render, HttpResponseRedirect
 from django.contrib import auth
 from django.urls import reverse
 
-from userapp.forms import UserLoginForm, UserRegisterForm
+from userapp.forms import UserLoginForm, UserRegisterForm, UserProfileForm
+
+from basketapp.models import Basket
 
 
 def login(request):
     if request.user.is_authenticated:
         return HttpResponseRedirect(reverse('index'))
 
-    form = UserLoginForm(data=request.POST)
-    if request.method == 'POST' and form.is_valid():
-        username = request.POST['username']
-        password = request.POST['password']
-
-        user = auth.authenticate(username=username, password=password)
-        print(user.is_active)
-        if user and user.is_active:
-            auth.login(request, user)
-            return HttpResponseRedirect(reverse('index'))
+    if request.method == 'POST':
+        form = UserLoginForm(data=request.POST)
+        if form.is_valid():
+            username = request.POST['username']
+            password = request.POST['password']
+            user = auth.authenticate(username=username, password=password)
+            if user and user.is_active:
+                auth.login(request, user)
+                return HttpResponseRedirect(reverse('index'))
+    else:
+        form = UserLoginForm()
 
     context = {
         'title': 'GeekShop - Авторизация',
@@ -33,7 +36,6 @@ def logout(request):
 
 
 def register(request):
-    print(request)
     if request.user.is_authenticated:
         return HttpResponseRedirect(reverse('index'))
     
@@ -43,10 +45,6 @@ def register(request):
         if form.is_valid():
             form.save()
             return HttpResponseRedirect(reverse('user:login'))
-        else:
-            print(form.errors)
-            for error in form.errors:
-                print(error)
     else:
         form = UserRegisterForm()
 
@@ -59,3 +57,25 @@ def register(request):
         'grouped_form': grouped_form
     }
     return render(request, 'userapp/register.html', context=context)
+
+
+def profile(request):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse('index'))
+    
+    if request.method == 'POST':
+        form = UserProfileForm(data=request.POST, files=request.FILES, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('user:profile'))
+    else:
+        form = UserProfileForm(instance=request.user)
+
+    basket = Basket.objects.filter(user=request.user)
+    context = {
+        'title': f'Профиль пользователя {request.user.username}',
+        'form': form,
+        'basket': basket,
+        'basket_statistic': Basket.stat(basket),
+    }
+    return render(request, 'userapp/profile.html', context=context)
