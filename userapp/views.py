@@ -1,9 +1,9 @@
 from django.shortcuts import render, HttpResponseRedirect
 from django.contrib import auth
 from django.urls import reverse
+from django.contrib.auth.decorators import login_required
 
 from userapp.forms import UserLoginForm, UserRegisterForm, UserProfileForm
-
 from basketapp.models import Basket
 
 
@@ -11,21 +11,22 @@ def login(request):
     if request.user.is_authenticated:
         return HttpResponseRedirect(reverse('index'))
 
-    if request.method == 'POST':
-        form = UserLoginForm(data=request.POST)
-        if form.is_valid():
-            username = request.POST['username']
-            password = request.POST['password']
-            user = auth.authenticate(username=username, password=password)
-            if user and user.is_active:
-                auth.login(request, user)
+    form = UserLoginForm(data=request.POST or None)
+    next = request.GET['next'] if 'next' in request.GET.keys() else ''
+    if request.method == 'POST' and form.is_valid():
+        username = request.POST['username']
+        password = request.POST['password']
+        user = auth.authenticate(username=username, password=password)
+        if user and user.is_active:
+            auth.login(request, user)
+            if 'next' in request.POST.keys():
+                return HttpResponseRedirect(request.POST['next'])
+            else:
                 return HttpResponseRedirect(reverse('index'))
-    else:
-        form = UserLoginForm()
-
     context = {
         'title': 'GeekShop - Авторизация',
         'form': form,
+        'next': next,
     }
     return render(request, 'userapp/login.html', context=context)
 
@@ -59,10 +60,8 @@ def register(request):
     return render(request, 'userapp/register.html', context=context)
 
 
+@login_required
 def profile(request):
-    if not request.user.is_authenticated:
-        return HttpResponseRedirect(reverse('index'))
-    
     if request.method == 'POST':
         form = UserProfileForm(data=request.POST, files=request.FILES, instance=request.user)
         if form.is_valid():
@@ -76,6 +75,6 @@ def profile(request):
         'title': f'Профиль пользователя {request.user.username}',
         'form': form,
         'basket': basket,
-        'basket_statistic': Basket.stat(basket),
+        # 'basket_statistic': Basket.basket_totals(basket),
     }
     return render(request, 'userapp/profile.html', context=context)
