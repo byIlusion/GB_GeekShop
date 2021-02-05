@@ -18,12 +18,9 @@ class Basket(models.Model):
     @staticmethod
     def stat(basket):
         result = {
-            'count_all': 0,
-            'sum_all': 0.0,
+            'count_all': sum(item.quantity for item in basket),
+            'sum_all': sum(item.sum() for item in basket),
         }
-        for item in basket:
-            result['count_all'] += item.quantity
-            result['sum_all'] += float(item.sum())
         return result
 
     @staticmethod
