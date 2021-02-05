@@ -15,15 +15,53 @@ class Basket(models.Model):
     def sum(self):
         return self.quantity * self.product.price
 
-    @staticmethod
-    def stat(basket):
-        result = {
-            'count_all': sum(item.quantity for item in basket),
-            'sum_all': sum(item.sum() for item in basket),
-        }
-        return result
+    @property
+    def total_quantity(self):
+        basket = Basket.objects.filter(user=self.user)
+        return Basket.basket_total_quantity(basket)
+
+    @property
+    def total_sum(self):
+        basket = Basket.objects.filter(user=self.user)
+        return Basket.basket_total_sum(basket)
 
     @staticmethod
-    def stat_by_user(user):
+    def basket_total_quantity(basket):
+        """Статичный метод для подсчета общего количества всех товаров запрашиваемой корзины
+
+        :param basket: Товары корзины (список)
+        :return: Общее количество всех товаров
+        """
+        return sum(item.quantity for item in basket)
+
+    @staticmethod
+    def basket_total_sum(basket):
+        """Статичный метод для суммирования стоимости всех товаров в запрашиваемой корзине
+
+        :param basket: Товары корзины (список)
+        :return: Сумма всех товаров
+        """
+        return sum(item.sum() for item in basket)
+
+    @staticmethod
+    def basket_totals(basket):
+        """Статичный метод для сбора статистики по запрашиваемой корзине
+        Позволяет собрать статистику не прибегая к повторной загрузки товаров корзины из БД
+
+        :param basket: Товары корзины (список)
+        :return: Словарь с Общим количество товаров и суммой всех этих товаров
+        """
+        return {
+            'total_quantity': Basket.basket_total_quantity(basket),
+            'total_sum': Basket.basket_total_sum(basket),
+        }
+
+    @staticmethod
+    def basket_totals_by_user(user):
+        """Статичный метод для сбора статистики по корзине для запрашиваемого пользователя
+
+        :param user: Объект пользователя
+        :return: Словарь с Общим количество товаров и суммой всех этих товаров
+        """
         basket = Basket.objects.filter(user=user)
-        return Basket.stat(basket)
+        return Basket.basket_totals(basket)

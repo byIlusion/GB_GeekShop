@@ -63,7 +63,13 @@
                     </div>
                 </form>
             </div>
-            {% include 'basketapp/basket.html' %}
+            <div id="basket" class="col-lg-5">
+                {% include 'basketapp/basket.html' %}
+            </div>
         </div>
     </div>
 {% endblock content %}
+
+{% block script %}
+    <script src="{% static 'js/basket.js' %}"></script>
+{% endblock %}
