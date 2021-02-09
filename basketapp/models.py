@@ -65,3 +65,7 @@ class Basket(models.Model):
         """
         basket = Basket.objects.filter(user=user)
         return Basket.basket_totals(basket)
+
+    @staticmethod
+    def get_all():
+        return Basket.objects.all().order_by('-id')
