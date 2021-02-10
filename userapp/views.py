@@ -1,16 +1,14 @@
 from django.shortcuts import render, HttpResponseRedirect
 from django.contrib import auth
 from django.urls import reverse
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 
 from userapp.forms import UserLoginForm, UserRegisterForm, UserProfileForm
 from basketapp.models import Basket
 
 
+@user_passes_test(lambda u: u.is_anonymous, login_url='user:profile', redirect_field_name='')
 def login(request):
-    if request.user.is_authenticated:
-        return HttpResponseRedirect(reverse('index'))
-
     form = UserLoginForm(data=request.POST or None)
     next = request.GET['next'] if 'next' in request.GET.keys() else ''
     if request.method == 'POST' and form.is_valid():
@@ -36,10 +34,8 @@ def logout(request):
     return HttpResponseRedirect(reverse('index'))
 
 
+@user_passes_test(lambda u: u.is_anonymous, login_url='user:profile', redirect_field_name='')
 def register(request):
-    if request.user.is_authenticated:
-        return HttpResponseRedirect(reverse('index'))
-    
     if request.method == 'POST':
         form = UserRegisterForm(request.POST, request.FILES)
 

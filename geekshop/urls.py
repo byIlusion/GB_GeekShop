@@ -24,8 +24,9 @@ import mainapp.views as mainapp_view
 
 urlpatterns = [
     path('', mainapp_view.main, name='index'),
-    path('admin/', admin.site.urls),
+    path('admin/', admin.site.urls, name='admin'),
 
+    path('admin/staff/', include('adminapp.urls', namespace='admin_staff')),
     path('products/', include('mainapp.urls', namespace='products')),
     path('user/', include('userapp.urls', namespace='user')),
     path('basket/', include('basketapp.urls', namespace='basket')),

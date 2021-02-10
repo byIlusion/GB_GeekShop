@@ -1,0 +1,29 @@
+{% extends 'adminapp/base.html' %}
+
+{% block content %}
+    <form action="{{ action }}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="col-lg-12">
+            <label class="small mb-1" for="{{ form.name.id_for_label }}">{{ form.name.label }}</label>
+            {{ form.name }}
+        </div>
+        <div class="col-lg-12">
+            <label class="small mb-1" for="{{ form.description.id_for_label }}">{{ form.description.label }}</label>
+            {{ form.description }}
+        </div>
+        <div class="form-row">
+            {% if is_update %}
+                <div class="col-lg-6" style="margin-top: 33px;">
+                    <input class="btn btn-info btn-block" type="submit" value="Обновить">
+                </div>
+                <div class="col-lg-6" style="margin-top: 33px;">
+                    <a href="{% url 'adminapp:category_delete' category.id %}" class="btn btn-danger btn-block">Удалить</a>
+                </div>
+            {% else %}
+                <div class="col-lg-12" style="margin-top: 33px;">
+                    <input class="btn btn-info btn-block" type="submit" value="Создать">
+                </div>
+            {% endif %}
+        </div>
+    </form>
+{% endblock %}

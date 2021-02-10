@@ -57,11 +57,14 @@ class UserProfileForm(UserChangeForm):
         super(UserProfileForm, self).__init__(*args, **kwargs)
         for name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control py-4'
+        self.fields['first_name'].widget.attrs['placeholder'] = 'Введите имя'
+        self.fields['last_name'].widget.attrs['placeholder'] = 'Введите фамилию'
         self.fields['avatar'].widget.attrs['class'] = 'custom-file-input'
-        self.fields['avatar'].widget.attrs['required'] = False
         self.fields['username'].widget.attrs['readonly'] = True
         self.fields['username'].widget.attrs['aria-describedby'] = 'usernameHelp'
+        self.fields['username'].widget.attrs['placeholder'] = 'Введите имя пользователя'
         self.fields['email'].widget.attrs['readonly'] = True
         self.fields['email'].widget.attrs['aria-describedby'] = 'emailHelp'
+        self.fields['email'].widget.attrs['placeholder'] = 'Введите адрес эл. почты'
         self.fields['age'].widget.attrs['aria-describedby'] = 'birthdayHelp'
         self.fields['age'].widget.attrs['type'] = 'date'

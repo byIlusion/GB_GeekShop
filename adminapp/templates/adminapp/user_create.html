@@ -1,0 +1,65 @@
+{% extends 'adminapp/base.html' %}
+
+{% block content %}
+    <form action="{% url 'adminapp:user_create' %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-row">
+            <div class="col-lg-6">
+                <label class="small mb-1" for="{{ form.username.id_for_label }}">{{ form.username.label }}</label>
+                {{ form.username }}
+            </div>
+            <div class="col-lg-6">
+                <label class="small mb-1" for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>
+                {{ form.email }}
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col-lg-5">
+                <div class="form-group">
+                    <label class="small mb-1" for="{{ form.first_name.id_for_label }}">{{ form.first_name.label }}</label>
+                    {{ form.first_name }}
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="form-group">
+                    <label class="small mb-1" for="{{ form.last_name.id_for_label }}">{{ form.last_name.label }}</label>
+                    {{ form.last_name }}
+                </div>
+            </div>
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label class="small mb-1" for="{{ form.age.id_for_label }}">День рождения</label>
+                    <input class="form-control py-4" id="{{ form.age.id_for_label }}" name="{{ form.age.name }}" type="date"
+                           aria-describedby="birthdayHelp" value="{{ form.age.value|date:'Y-m-d' }}"/>
+                </div>
+            </div>
+        </div>
+        <div class="form-row mb-2">
+            <div class="col-lg-12">
+                <div class="custom-file">
+                    {{ form.avatar }}
+                    <label class="custom-file-label" for="{{ form.avatar.id_for_label }}">{{ form.avatar.label }}</label>
+                </div>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <label class="small mb-1" for="{{ form.password1.id_for_label }}">{{ form.password1.label }}</label>
+                    {{ form.password1 }}
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <label class="small mb-1" for="{{ form.password2.id_for_label }}">{{ form.password2.label }}</label>
+                    {{ form.password2 }}
+                </div>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col-lg-12" style="margin-top: 33px;">
+                <input class="btn btn-info btn-block" type="submit" value="Создать">
+            </div>
+        </div>
+    </form>
+{% endblock %}
