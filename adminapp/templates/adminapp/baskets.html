@@ -28,8 +28,8 @@
                     </tr>
                     </tfoot>
                     <tbody>
-                        {% if baskets %}
-                            {% for basket in baskets %}
+                        {% if basket_list %}
+                            {% for basket in basket_list %}
                                 <tr>
                                     <td><a href="{% url 'adminapp:user_update' basket.user.id %}" style="color: dodgerblue">{{ basket.user.username }}</a></td>
                                     <td>{{ basket.product.name }}</td>
@@ -47,8 +47,5 @@
                 </table>
             </div>
         </div>
-        <!--<div class="card-footer">
-            <a href="{% url 'adminapp:category_create' %}" class="btn btn-success">Создать категорию</a>
-        </div>-->
     </div>
 {% endblock %}

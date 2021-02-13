@@ -1,7 +1,10 @@
 from django.shortcuts import render
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import user_passes_test
+from django.views.generic.list import ListView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.utils.decorators import method_decorator
 
 from userapp.models import User
 from mainapp.models import ProductCategory, Product
@@ -15,49 +18,41 @@ def index(request):
     return render(request, 'adminapp/index.html', context)
 
 
-@user_passes_test(lambda u: u.is_staff)
-def users(request):
-    context = {
-        'title': 'Пользователи',
-        'users': User.objects.all(),
-    }
-    return render(request, 'adminapp/users.html', context)
+class UsersListView(ListView):
+    model = User
+    template_name = 'adminapp/users.html'
+    extra_context = {'title': 'Пользователи'}
+
+    @method_decorator(user_passes_test(lambda u: u.is_staff))
+    def dispatch(self, request, *args, **kwargs):
+        return super(UsersListView, self).dispatch(request, *args, **kwargs)
 
 
-@user_passes_test(lambda u: u.is_staff)
-def user_create(request):
-    if request.method == 'POST':
-        form = AdminUserCreate(data=request.POST, files=request.FILES)
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect(reverse('admin_staff:users'))
-    else:
-        form = AdminUserCreate()
+class UserCreateView(CreateView):
+    model = User
+    template_name = 'adminapp/user_create.html'
+    form_class = AdminUserCreate
+    success_url = reverse_lazy('admin_staff:users')
+    extra_context = {'title': 'Создать пользователя'}
 
-    context = {
-        'title': 'Создать пользователя',
-        'form': form,
-    }
-    return render(request, 'adminapp/user_create.html', context)
+    @method_decorator(user_passes_test(lambda u: u.is_staff))
+    def dispatch(self, request, *args, **kwargs):
+        return super(UserCreateView, self).dispatch(request, *args, **kwargs)
 
 
-@user_passes_test(lambda u: u.is_staff)
-def user_update(request, user_id=None):
-    current_user = User.objects.get(id=user_id)
-    if request.method == 'POST':
-        form = AdminUserUpdate(data=request.POST, files=request.FILES, instance=current_user)
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect(reverse('admin_staff:user_update', args=[current_user.id]))
-    else:
-        form = AdminUserUpdate(instance=current_user)
+class UserUpdateView(UpdateView):
+    model = User
+    template_name = 'adminapp/user_update.html'
+    form_class = AdminUserUpdate
+    extra_context = {'title': 'Редактирование пользователя'}
 
-    context = {
-        'title': current_user.username,
-        'form': form,
-        'current_user': current_user,
-    }
-    return render(request, 'adminapp/user_update.html', context)
+    def get_success_url(self):
+        self.success_url = reverse_lazy('admin_staff:user_update', args=[self.kwargs['pk']])
+        return str(self.success_url)
+
+    @method_decorator(user_passes_test(lambda u: u.is_staff))
+    def dispatch(self, request, *args, **kwargs):
+        return super(UserUpdateView, self).dispatch(request, *args, **kwargs)
 
 
 @user_passes_test(lambda u: u.is_staff)
@@ -68,75 +63,68 @@ def user_delete(request, user_id=None):
     return HttpResponseRedirect(reverse('admin_staff:user_update', args=[current_user.id]))
 
 
-@user_passes_test(lambda u: u.is_staff)
-def categories(request):
-    context = {
-        'title': 'Категории',
-        'categories': ProductCategory.objects.all(),
-    }
-    return render(request, 'adminapp/categories.html', context)
+class CategoryListView(ListView):
+    model = ProductCategory
+    template_name = 'adminapp/categories.html'
+    extra_context = {'title': 'Категории'}
+
+    @method_decorator(user_passes_test(lambda u: u.is_staff))
+    def dispatch(self, request, *args, **kwargs):
+        return super(CategoryListView, self).dispatch(request, *args, **kwargs)
 
 
-@user_passes_test(lambda u: u.is_staff)
-def category_create(request):
-    if request.method == 'POST':
-        form = AdminCategoryForm(data=request.POST)
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect(reverse('admin_staff:categories'))
-    else:
-        form = AdminCategoryForm()
+class CategoryCreateView(CreateView):
+    model = ProductCategory
+    template_name = 'adminapp/category.html'
+    form_class = AdminCategoryForm
+    success_url = reverse_lazy('admin_staff:categories')
+    extra_context = {'title': 'Создать категорию'}
 
-    context = {
-        'title': 'Создать категорию',
-        'form': form,
-        'action': reverse('adminapp:category_create'),
-        'is_update': False,
-    }
-    return render(request, 'adminapp/category.html', context)
+    @method_decorator(user_passes_test(lambda u: u.is_staff))
+    def dispatch(self, request, *args, **kwargs):
+        return super(CategoryCreateView, self).dispatch(request, *args, **kwargs)
 
 
-@user_passes_test(lambda u: u.is_staff)
-def category_update(request, category_id=None):
-    current_category = ProductCategory.objects.get(id=category_id)
-    if request.method == 'POST':
-        form = AdminCategoryForm(data=request.POST, instance=current_category)
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect(reverse('admin_staff:categories'))
-    else:
-        form = AdminCategoryForm(instance=current_category)
-
-    context = {
+class CategoryUpdateView(UpdateView):
+    model = ProductCategory
+    template_name = 'adminapp/category.html'
+    form_class = AdminCategoryForm
+    success_url = reverse_lazy('admin_staff:categories')
+    extra_context = {
         'title': 'Редактирование категории',
-        'form': form,
-        'action': reverse('adminapp:category_update', args=[current_category.id]),
         'is_update': True,
-        'category': current_category,
     }
-    return render(request, 'adminapp/category.html', context)
+
+    @method_decorator(user_passes_test(lambda u: u.is_staff))
+    def dispatch(self, request, *args, **kwargs):
+        return super(CategoryUpdateView, self).dispatch(request, *args, **kwargs)
 
 
-@user_passes_test(lambda u: u.is_staff)
-def category_delete(request, category_id=None):
-    current_category = ProductCategory.objects.get(id=category_id)
-    current_category.delete()
-    return HttpResponseRedirect(reverse('admin_staff:categories'))
+class CategoryDeleteView(DeleteView):
+    model = ProductCategory
+    template_name = 'adminapp/category.html'
+    success_url = reverse_lazy('adminapp:categories')
+
+    @method_decorator(user_passes_test(lambda u: u.is_staff))
+    def dispatch(self, request, *args, **kwargs):
+        return super(CategoryDeleteView, self).dispatch(request, *args, **kwargs)
 
 
-@user_passes_test(lambda u: u.is_staff)
-def products(request):
-    context = {
-        'title': 'Товары',
-        'products': Product.objects.all(),
-    }
-    return render(request, 'adminapp/products.html', context)
+class ProductListView(ListView):
+    model = Product
+    template_name = 'adminapp/products.html'
+    extra_context = {'title': 'Товары'}
+
+    @method_decorator(user_passes_test(lambda u: u.is_staff))
+    def dispatch(self, request, *args, **kwargs):
+        return super(ProductListView, self).dispatch(request, *args, **kwargs)
 
 
-@user_passes_test(lambda u: u.is_staff)
-def baskets(request):
-    context = {
-        'title': 'Корзины пользователей',
-        'baskets': Basket.get_all(),
-    }
-    return render(request, 'adminapp/baskets.html', context)
+class BasketListView(ListView):
+    model = Basket
+    template_name = 'adminapp/baskets.html'
+    extra_context = {'title': 'Корзины пользователей'}
+
+    @method_decorator(user_passes_test(lambda u: u.is_staff))
+    def dispatch(self, request, *args, **kwargs):
+        return super(BasketListView, self).dispatch(request, *args, **kwargs)

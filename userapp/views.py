@@ -1,9 +1,11 @@
 from django.shortcuts import render, HttpResponseRedirect
 from django.contrib import auth
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.views.generic.edit import UpdateView
 
 from userapp.forms import UserLoginForm, UserRegisterForm, UserProfileForm
+from userapp.models import User
 from basketapp.models import Basket
 
 
