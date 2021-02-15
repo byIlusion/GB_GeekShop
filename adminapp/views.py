@@ -78,7 +78,10 @@ class CategoryCreateView(CreateView):
     template_name = 'adminapp/category.html'
     form_class = AdminCategoryForm
     success_url = reverse_lazy('admin_staff:categories')
-    extra_context = {'title': 'Создать категорию'}
+    extra_context = {
+        'title': 'Создать категорию',
+        'action': reverse_lazy('adminapp:category_create'),
+    }
 
     @method_decorator(user_passes_test(lambda u: u.is_staff))
     def dispatch(self, request, *args, **kwargs):
@@ -94,6 +97,13 @@ class CategoryUpdateView(UpdateView):
         'title': 'Редактирование категории',
         'is_update': True,
     }
+
+    def get_context_data(self, **kwargs):
+        context = super(CategoryUpdateView, self).get_context_data(**kwargs)
+        context.update({
+            'action': reverse_lazy('adminapp:category_update', args=[self.kwargs['pk']]),
+        })
+        return context
 
     @method_decorator(user_passes_test(lambda u: u.is_staff))
     def dispatch(self, request, *args, **kwargs):
