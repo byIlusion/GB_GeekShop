@@ -26,8 +26,8 @@
                     </tr>
                     </tfoot>
                     <tbody>
-                        {% if products %}
-                            {% for product in products %}
+                        {% if product_list %}
+                            {% for product in product_list %}
                                 <tr>
                                     <td>{{ product.name }}</td>
                                     <td><a href="{% url 'adminapp:category_update' product.category.id %}" style="color: dodgerblue">{{ product.category.name }}</a></td>

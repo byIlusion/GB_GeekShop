@@ -39,12 +39,6 @@ class UserRegisterForm(UserCreationForm):
         for name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control py-4'
 
-    def clean_age(self):
-        age = self.cleaned_data['age']
-        if age > 100:
-            raise forms.ValidationErrors('Вы слишком стары!')
-        return age
-
 
 class UserProfileForm(UserChangeForm):
     avatar = forms.ImageField(widget=forms.FileInput(), required=False)

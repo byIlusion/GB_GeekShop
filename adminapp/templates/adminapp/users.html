@@ -32,8 +32,8 @@
                     </tr>
                     </tfoot>
                     <tbody>
-                        {% if users %}
-                            {% for user in users %}
+                        {% if user_list %}
+                            {% for user in user_list %}
                                 <tr>
                                     <td><a href="{% url 'adminapp:user_update' user.id %}" style="color: dodgerblue">{{ user.username }}</a></td>
                                     <td>{{ user.first_name }}</td>
