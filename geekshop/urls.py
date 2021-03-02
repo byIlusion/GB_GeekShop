@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import re_path
 from django.conf import settings
 from django.conf.urls.static import static
 from django.conf.urls import include
@@ -23,13 +23,13 @@ import mainapp.views as mainapp_view
 
 
 urlpatterns = [
-    path('', mainapp_view.main, name='index'),
-    path('admin/', admin.site.urls, name='admin'),
+    re_path(r'^$', mainapp_view.main, name='index'),
+    re_path(r'^admin/', admin.site.urls, name='admin'),
 
-    path('admin-staff/', include('adminapp.urls', namespace='admin_staff')),
-    path('products/', include('mainapp.urls', namespace='products')),
-    path('user/', include('userapp.urls', namespace='user')),
-    path('basket/', include('basketapp.urls', namespace='basket')),
+    re_path(r'^admin-staff/', include('adminapp.urls', namespace='admin_staff')),
+    re_path(r'^products/', include('mainapp.urls', namespace='products')),
+    re_path(r'^user/', include('userapp.urls', namespace='user')),
+    re_path(r'^basket/', include('basketapp.urls', namespace='basket')),
 ]
 
 if settings.DEBUG:

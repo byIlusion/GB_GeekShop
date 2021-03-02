@@ -14,6 +14,7 @@ def basket_add(request, product_id=None):
         return HttpResponseRedirect(reverse('mainapp:index'))
 
     if product_id:
+        product_id = int(product_id)
         product = Product.objects.filter(id=product_id)
         if product.exists():
             product = product.first()
@@ -30,6 +31,7 @@ def basket_add(request, product_id=None):
 @login_required
 def basket_remove(request, basket_id=None):
     if basket_id:
+        basket_id = int(basket_id)
         basket = Basket.objects.filter(id=basket_id)
         if basket.exists():
             basket.first().delete()
@@ -39,6 +41,8 @@ def basket_remove(request, basket_id=None):
 @login_required
 def basket_edit(request, basket_id, quantity):
     if request.is_ajax():
+        basket_id = int(basket_id)
+        quantity = int(quantity)
         basket = Basket.objects.filter(id=basket_id)
         if basket.exists():
             item = basket.first()

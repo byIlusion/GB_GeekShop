@@ -13,6 +13,7 @@ def main(request):
 
 def products(request, category_id=None):
     if category_id is not None:
+        category_id = int(category_id)
         product_list = Product.objects.filter(category_id=category_id)
     else:
         product_list = Product.objects.all()
