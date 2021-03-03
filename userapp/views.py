@@ -1,10 +1,15 @@
+import hashlib
+
 from django.shortcuts import render, HttpResponseRedirect
+from django.conf import settings
 from django.contrib import auth
+from django.core.mail import send_mail
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required, user_passes_test
 
 from userapp.forms import UserLoginForm, UserRegisterForm, UserProfileForm
 from basketapp.models import Basket
+from userapp.models import User
 
 
 @user_passes_test(lambda u: u.is_anonymous, login_url='user:profile', redirect_field_name='')
@@ -40,8 +45,18 @@ def register(request):
         form = UserRegisterForm(request.POST, request.FILES)
 
         if form.is_valid():
-            form.save()
-            return HttpResponseRedirect(reverse('user:login'))
+            user = form.save()
+            params = {
+                'user': user.id,
+                'sendmail': 1,
+            }
+            if send_activation_code(user):
+                print('Отправлено сообщение')
+            else:
+                params['sendmail'] = 0
+                print('Что-то пошло не так!')
+            return HttpResponseRedirect(reverse('user:verify') + build_GET(params))
+
     else:
         form = UserRegisterForm()
 
@@ -75,5 +90,75 @@ def profile(request):
     return render(request, 'userapp/profile.html', context=context)
 
 
+@user_passes_test(lambda u: u.is_anonymous, login_url='user:profile', redirect_field_name='')
+def verify(request):
+    if request.method == 'GET':
+        user_id = int(request.GET['user'])
+        try:
+            user = User.objects.get(pk=user_id)
+            print(user)
+        except User.DoesNotExist:
+            msg = 'Ошибка данных'
+            error = True
+        else:
+            if 'sendmail' in request.GET:
+                if request.GET['sendmail'] == '0':
+                    msg = f'Не удалось отправить письмо на почту {user.email}. \
+                            Повторите попытку позже.'
+                    error = True
+                else:
+                    msg = f'На почту {user.email} отправлено письмо. \
+                            Для активации учетной записи {user.username} перейдите по ссылке из письма'
+                    error = False
+            elif 'hash' in request.GET and request.GET['hash'] == get_sha1(user.email) \
+                    and 'key' in request.GET and request.GET['key'] == user.activation_key \
+                    and user.check_activation_key():
+                user.is_active = True
+                user.save()
+                msg = 'Активация успешно завершена! Теперь можете продолжить покупки.'
+                error = False
+            else:
+                msg = 'Ошибка данных'
+                error = True
+    else:
+        msg = 'Ошибка запроса'
+        error = True
+
+    context = {
+        'msg': msg,
+        'error': error
+    }
+    return render(request, 'userapp/verify.html', context=context)
+
+
 def send_activation_code(user):
-    pass
+    args = {
+        'user': user.pk,
+        'hash': get_sha1(user.email),
+        'key': user.activation_key,
+    }
+    link = settings.DOMAIN_NAME + reverse('userapp:verify') + build_GET(args)
+
+    title = f"Подтверждение учетной записи {user.username}"
+    message = f"Для подтверждения учетной записи {user.username} \
+        на портале {settings.DOMAIN_NAME} перейдите по ссылке: \
+        \n{link}"
+
+    # print(title)
+    # print(message)
+    print(f"from: {settings.EMAIL_HOST_USER}, to: {user.email}")
+    return send_mail(
+        title,
+        message,
+        settings.EMAIL_HOST_USER,
+        [user.email],
+        fail_silently=False,
+    )
+
+
+def get_sha1(string):
+    return hashlib.sha1(string.encode("utf8")).hexdigest()
+
+
+def build_GET(args):
+    return '?' + '&'.join([f'{str(v)}={str(args[v])}' for v in args]) if args else ''

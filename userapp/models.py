@@ -12,7 +12,7 @@ class User(AbstractUser):
     activation_key_expires = models.DateTimeField(verbose_name='Время жизни ключа', default=(now() + timedelta(hours=24)))
 
     def check_activation_key(self):
-        if now() > self.activation_key_expires:
+        if now() < self.activation_key_expires:
             return True
         else:
             return False

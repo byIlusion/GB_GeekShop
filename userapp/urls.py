@@ -9,5 +9,6 @@ urlpatterns = [
     re_path(r'^logout/$', userapp.logout, name='logout'),
     re_path(r'^register/$', userapp.register, name='register'),
     re_path(r'^profile/$', userapp.profile, name='profile'),
+    re_path(r'^verify/$', userapp.verify, name='verify'),
 ]
 
