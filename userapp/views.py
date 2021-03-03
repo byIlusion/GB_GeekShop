@@ -1,11 +1,9 @@
 from django.shortcuts import render, HttpResponseRedirect
 from django.contrib import auth
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.views.generic.edit import UpdateView
 
 from userapp.forms import UserLoginForm, UserRegisterForm, UserProfileForm
-from userapp.models import User
 from basketapp.models import Basket
 
 
@@ -73,6 +71,9 @@ def profile(request):
         'title': f'Профиль пользователя {request.user.username}',
         'form': form,
         'basket': basket,
-        # 'basket_statistic': Basket.basket_totals(basket),
     }
     return render(request, 'userapp/profile.html', context=context)
+
+
+def send_activation_code(user):
+    pass
