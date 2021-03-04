@@ -67,6 +67,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'basketapp.context_processors.basket',
+                'basketapp.context_processors.basket_stat',
             ],
         },
     },
@@ -89,20 +91,24 @@ DATABASES = {
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
 
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
-]
+if not DEBUG:
+    AUTH_PASSWORD_VALIDATORS = [
+        {
+            'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        },
+        {
+            'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        },
+        {
+            'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        },
+        {
+            'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        },
+    ]
+else:
+    # Set simple password for debug
+    AUTH_PASSWORD_VALIDATORS = []
 
 
 # Internationalization
@@ -152,8 +158,8 @@ EMAIL_USE_SSL = False
 # If server support TLS:
 # EMAIL_USE_TLS = True
 
-EMAIL_HOST_USER = "django@geekshop.local"
-EMAIL_HOST_PASSWORD = "geekshop"
+EMAIL_HOST_USER = None
+EMAIL_HOST_PASSWORD = None
 # For debugging: python -m smtpd -n -c DebuggingServer localhost:25
 # EMAIL_HOST_USER = None
 # EMAIL_HOST_PASSWORD = None

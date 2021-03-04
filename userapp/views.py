@@ -81,16 +81,13 @@ def profile(request):
     else:
         form = UserProfileForm(instance=request.user)
 
-    basket = Basket.objects.filter(user=request.user)
     context = {
         'title': f'Профиль пользователя {request.user.username}',
         'form': form,
-        'basket': basket,
     }
     return render(request, 'userapp/profile.html', context=context)
 
 
-@user_passes_test(lambda u: u.is_anonymous, login_url='user:profile', redirect_field_name='')
 def verify(request):
     if request.method == 'GET':
         user_id = int(request.GET['user'])
@@ -115,6 +112,7 @@ def verify(request):
                     and user.check_activation_key():
                 user.is_active = True
                 user.save()
+                auth.login(request, user)
                 msg = 'Активация успешно завершена! Теперь можете продолжить покупки.'
                 error = False
             else:

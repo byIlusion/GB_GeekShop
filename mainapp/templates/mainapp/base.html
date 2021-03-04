@@ -38,7 +38,9 @@
                 </li>
                 {% if user.is_authenticated %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'user:profile' %}">{{ user.username }}
+                        <a class="nav-link" href="{% url 'user:profile' %}">
+                            {{ user.username }}
+                            {% if basket %}(Товаров: {{ basket_stat.total_quantity }}. Сумма: {{ basket_stat.total_sum }}){% endif %}
                             <i class="fas fa-user-circle"></i>
                         </a>
                     </li>
