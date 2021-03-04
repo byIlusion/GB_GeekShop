@@ -57,6 +57,8 @@ class UserUpdateView(UpdateView):
 
 @user_passes_test(lambda u: u.is_staff)
 def user_delete(request, user_id=None):
+    if user_id is not None:
+        user_id = int(user_id)
     current_user = User.objects.get(id=user_id)
     current_user.is_active = not current_user.is_active
     current_user.save()
