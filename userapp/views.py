@@ -112,7 +112,7 @@ def verify(request):
                     and user.check_activation_key():
                 user.is_active = True
                 user.save()
-                auth.login(request, user)
+                auth.login(request, user, backend='django.contrib.auth.backends.ModelBackend')
                 msg = 'Активация успешно завершена! Теперь можете продолжить покупки.'
                 error = False
             else:
