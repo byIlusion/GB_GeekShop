@@ -41,6 +41,11 @@
                     Вход через <i class="fab fa-vk" aria-hidden="true"></i>
                 </a>
             </div>
+            <div>
+                <a href="{% url 'social:begin' 'github' %}?next=/" class="btn btn-primary btn-block" role="button">
+                    Вход через <i class="fab fa-github" aria-hidden="true"></i>
+                </a>
+            </div>
         </div>
     </div>
 {% endblock %}

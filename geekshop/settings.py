@@ -55,6 +55,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "social_django.middleware.SocialAuthExceptionMiddleware",
 ]
 
 ROOT_URLCONF = 'geekshop.urls'
@@ -72,6 +73,8 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'basketapp.context_processors.basket',
                 'basketapp.context_processors.basket_stat',
+                "social_django.context_processors.backends",
+                "social_django.context_processors.login_redirect",
             ],
         },
     },
@@ -145,7 +148,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 AUTH_USER_MODEL = 'userapp.User'
 
-LOGIN_URL = '/user/login/'
+# LOGIN_URL = '/user/login/'
+LOGIN_URL = 'userapp:login'
 
 DOMAIN_NAME = "http://localhost:8000"
 
@@ -175,14 +179,36 @@ EMAIL_FILE_PATH = "tmp/email-messages/"
 AUTHENTICATION_BACKENDS = (
     "django.contrib.auth.backends.ModelBackend",
     "social_core.backends.vk.VKOAuth2",
+    "social_core.backends.github.GithubOAuth2",
 )
 
 SOCIAL_AUTH_URL_NAMESPACE = "social"
 
 with open('secrets/vk.json', 'r') as f:
     VK = json.load(f)
-
-# SOCIAL_AUTH_VK_OAUTH2_KEY = VK["SOCIAL_AUTH_VK_OAUTH2_KEY"]
-# SOCIAL_AUTH_VK_OAUTH2_SECRET = VK["SOCIAL_AUTH_VK_OAUTH2_SECRET"]
 SOCIAL_AUTH_VK_OAUTH2_KEY = VK["SOCIAL_AUTH_VK_OAUTH2_APPID"]
 SOCIAL_AUTH_VK_OAUTH2_SECRET = VK["SOCIAL_AUTH_VK_OAUTH2_KEY"]
+
+with open('secrets/github.json', 'r') as f:
+    GITHUB = json.load(f)
+SOCIAL_AUTH_GITHUB_KEY = GITHUB["SOCIAL_AUTH_GITHUB_KEY"]
+SOCIAL_AUTH_GITHUB_SECRET = GITHUB["SOCIAL_AUTH_GITHUB_SECRET"]
+
+LOGIN_ERROR_URL = "/"
+
+SOCIAL_AUTH_VK_OAUTH2_IGNORE_DEFAULT_SCOPE = True
+# Full list of scope here:
+#     https://vk.com/dev/permissions
+SOCIAL_AUTH_VK_OAUTH2_SCOPE = ["email"]
+
+SOCIAL_AUTH_PIPELINE = (
+    "social_core.pipeline.social_auth.social_details",
+    "social_core.pipeline.social_auth.social_uid",
+    "social_core.pipeline.social_auth.auth_allowed",
+    "social_core.pipeline.social_auth.social_user",
+    "social_core.pipeline.user.create_user",
+    "userapp.pipeline.save_user_profile",
+    "social_core.pipeline.social_auth.associate_user",
+    "social_core.pipeline.social_auth.load_extra_data",
+    "social_core.pipeline.user.user_details",
+)

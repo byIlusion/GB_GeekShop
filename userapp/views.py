@@ -7,7 +7,7 @@ from django.core.mail import send_mail
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required, user_passes_test
 
-from userapp.forms import UserLoginForm, UserRegisterForm, UserProfileForm
+from userapp.forms import UserLoginForm, UserRegisterForm, UserEditForm, UserProfileEditForm
 from basketapp.models import Basket
 from userapp.models import User
 
@@ -74,16 +74,19 @@ def register(request):
 @login_required
 def profile(request):
     if request.method == 'POST':
-        form = UserProfileForm(data=request.POST, files=request.FILES, instance=request.user)
-        if form.is_valid():
-            form.save()
+        user_form = UserEditForm(data=request.POST, files=request.FILES, instance=request.user)
+        user_profile_form = UserProfileEditForm(data=request.POST, instance=request.user.userprofile)
+        if user_form.is_valid() and user_profile_form.is_valid():
+            user_form.save()
             return HttpResponseRedirect(reverse('user:profile'))
     else:
-        form = UserProfileForm(instance=request.user)
+        user_form = UserEditForm(instance=request.user)
+        user_profile_form = UserProfileEditForm(instance=request.user.userprofile)
 
     context = {
         'title': f'Профиль пользователя {request.user.username}',
-        'form': form,
+        'form': user_form,
+        'user_profile_form': user_profile_form,
     }
     return render(request, 'userapp/profile.html', context=context)
 

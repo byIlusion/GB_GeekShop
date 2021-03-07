@@ -3,7 +3,7 @@ import hashlib, random
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, UserChangeForm
 from django import forms
 
-from userapp.models import User
+from userapp.models import User, UserProfile
 
 
 class UserLoginForm(AuthenticationForm):
@@ -51,7 +51,7 @@ class UserRegisterForm(UserCreationForm):
         return user
 
 
-class UserProfileForm(UserChangeForm):
+class UserEditForm(UserChangeForm):
     avatar = forms.ImageField(widget=forms.FileInput(), required=False)
 
     class Meta:
@@ -59,9 +59,9 @@ class UserProfileForm(UserChangeForm):
         fields = ('avatar', 'first_name', 'last_name', 'username', 'email', 'age')
     
     def __init__(self, *args, **kwargs):
-        super(UserProfileForm, self).__init__(*args, **kwargs)
+        super(UserEditForm, self).__init__(*args, **kwargs)
         for name, field in self.fields.items():
-            field.widget.attrs['class'] = 'form-control py-4'
+            field.widget.attrs['class'] = 'form-control'
         self.fields['first_name'].widget.attrs['placeholder'] = 'Введите имя'
         self.fields['last_name'].widget.attrs['placeholder'] = 'Введите фамилию'
         self.fields['avatar'].widget.attrs['class'] = 'custom-file-input'
@@ -73,3 +73,14 @@ class UserProfileForm(UserChangeForm):
         self.fields['email'].widget.attrs['placeholder'] = 'Введите адрес эл. почты'
         self.fields['age'].widget.attrs['aria-describedby'] = 'birthdayHelp'
         self.fields['age'].widget.attrs['type'] = 'date'
+
+
+class UserProfileEditForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = ('tagline', 'about', 'gender')
+
+    def __init__(self, *args, **kwargs):
+        super(UserProfileEditForm, self).__init__(*args, **kwargs)
+        for name, field in self.fields.items():
+            field.widget.attrs['class'] = 'form-control'
