@@ -17,7 +17,7 @@ class AdminUserCreate(userapp.UserRegisterForm):
         self.fields['avatar'].widget.attrs['placeholder'] = 'Аватар'
 
 
-class AdminUserUpdate(userapp.UserProfileForm):
+class AdminUserUpdate(userapp.UserEditForm):
     class Meta:
         model = User
         fields = ('avatar', 'first_name', 'last_name', 'username', 'email', 'age')
