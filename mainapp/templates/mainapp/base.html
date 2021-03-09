@@ -38,20 +38,37 @@
                 </li>
                 {% if user.is_authenticated %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'user:profile' %}">
-                            {{ user.username }}
-                            {% if basket %}(Товаров: {{ basket_stat.total_quantity }}. Сумма: {{ basket_stat.total_sum }}){% endif %}
-                            <i class="fas fa-user-circle"></i>
-                        </a>
+                        <div class="dropdown">
+                            <a class="dropdown-toggle nav-link" href="" data-toggle="dropdown" id="dropdownMenuButton" aria-haspopup="true"
+                                aria-expanded="false">
+                                {{ user.username }}
+                                <span class="caret"></span>
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                {% if basket %}
+                                    <div class="dropdown-item disabled" href="{% url 'user:profile' %}">
+                                        <div>В корзине товаров: {{ basket_stat.total_quantity }}</div>
+                                        <div>Сумма: {{ basket_stat.total_sum }}</div>
+                                    </div>
+                                    <div class="dropdown-divider"></div>
+                                {% endif %}
+                                <a class="dropdown-item" href="{% url 'user:profile' %}">
+                                    <i class="fas fa-user mr-2"></i>{{ "профиль"|upper }}
+                                </a>
+                                <a class="dropdown-item" href="{% url 'order:order_list' %}">
+                                    <i class="fas fa-truck mr-2"></i>{{ "Кабинет заказов"|upper }}
+                                </a>
+                                {% if user.is_staff %}
+                                    <a class="dropdown-item" href="{% url 'admin_staff:index' %}">
+                                        <i class="fas fa-users-cog mr-2"></i>{{ "Персонал"|upper }}
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
                     </li>
                     {% if user.is_superuser %}
                         <li class="nav-item">
                             <a class="nav-link" href="/admin" target="_blank">Админка <i class="fas fa-user-shield"></i></a>
-                        </li>
-                    {% endif %}
-                    {% if user.is_staff %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'admin_staff:index' %}">Персонал <i class="fas fa-users-cog"></i></a>
                         </li>
                     {% endif %}
                     <li class="nav-item">

@@ -30,6 +30,7 @@ urlpatterns = [
     re_path(r'^products/', include('mainapp.urls', namespace='products')),
     re_path(r'^user/', include('userapp.urls', namespace='user')),
     re_path(r'^basket/', include('basketapp.urls', namespace='basket')),
+    re_path(r'^order/', include('orderapp.urls', namespace='order')),
     path('', include('social_django.urls', namespace='social')),
 ]
 
