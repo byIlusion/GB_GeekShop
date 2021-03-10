@@ -1,0 +1,96 @@
+{% extends 'adminapp/base.html' %}
+
+{% block content %}
+<table class="table my-4">
+    <thead>
+        <tr>
+            <th scope="col">Характеристика</th>
+            <th scope="col">Значение</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% if view.object %}
+            <tr>
+                <th scope="row">Описание заказа</th>
+                <td>Заказ №{{ object.pk }} от {{ object.created|date:"Y-m-d H:i:s" }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Заказчик</th>
+                <td>{% if user.first_name %}{{ user.first_name|title }}{% else %}{{ "пользователь"|capfirst }}{% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">Время обновления заказа</th>
+                <td>{{ object.updated|date:"Y-m-d H:i:s" }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Текущий статус</th>
+                <td>
+                    <span class="badge badge-info">{{ object.get_status_display|capfirst }}</span>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">Общее количество товаров</th>
+                <td><span class="order_total_quantity">{{ object.get_total_quantity }}</span></td>
+            </tr>
+            <tr>
+                <th scope="row">Общая стоимость</th>
+                <td><span class="order_total_cost">{{ object.get_total_cost }}</span> руб.</td>
+            </tr>
+        {% else %}
+            <tr>
+                <th scope="row">Общее количество товаров</th>
+                <td><span class="order_total_quantity">{{ basket.0.total_quantity }}</span></td>
+            </tr>
+            <tr>
+                <th scope="row">Общая стоимость</th>
+                <td><span class="order_total_cost">{{ basket.0.total_sum }}</span> руб.</td>
+            </tr>
+        {% endif %}
+    </tbody>
+</table>
+
+<div class="order_form">
+    <form action="" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <table class="table">
+            {{ orderitems.management_form }}
+            {% for form in orderitems.forms %}
+                {% if forloop.first %}
+                    <thead>
+                        <tr>
+                            {% for field in form.visible_fields %}
+                            <th class="{% cycle 'td1' 'td2' 'td3' %} order formset_td">
+                                {{ field.label|capfirst }}
+                            </th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                {% endif %}
+                <tr class="formset_row">
+                    {% for field in form.visible_fields %}
+                        <td class="{% cycle 'td1' 'td2' 'td3' %} order formset_td">
+                            {% if forloop.first %}
+                                {% for hidden in form.hidden_fields %}
+                                    {{ hidden }}
+                                {% endfor %}
+                            {% endif %}
+                            {{ field.errors.as_ul }}
+                            {{ field }}
+                        </td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </table>
+
+        <div class="btn-group col-12 mt-2 mb-5" role="group">
+            {{ status_list }}
+        </div>
+
+        <div class="btn-group col-12 mt-2 mb-5" role="group">
+            <button type="submit" value="сохранить" class="btn btn-outline-secondary">сохранить</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

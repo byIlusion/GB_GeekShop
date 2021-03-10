@@ -6,9 +6,9 @@ from django.contrib import auth
 from django.core.mail import send_mail
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.views.generic import UpdateView
 
 from userapp.forms import UserLoginForm, UserRegisterForm, UserEditForm, UserProfileEditForm
-from basketapp.models import Basket
 from userapp.models import User
 
 

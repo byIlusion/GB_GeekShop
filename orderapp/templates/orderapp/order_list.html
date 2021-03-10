@@ -1,69 +1,59 @@
 {% extends 'mainapp/base.html' %}
 
-{% load staticfiles %}
-
-{% block css %}
-<!--    <link href="{% static 'css/profile.css' %}" rel="stylesheet">-->
-{% endblock css %}
-
 {% block content %}
-<div class="container">
-    <p class="h2 text-center">
-        Ваши заказы, уважаемый
-        {% if user.first_name %}{{ user.first_name|title }}{% else %}{{ "пользователь"|capfirst }}{% endif %}
-    </p>
-    <div class="row justify-content-end my-4">
-        <div class="col-2">
-            <a href="{% url 'orderapp:order_create' %}" class="btn btn-sm btn-outline-success col-12" role="button"><i
-                    class="fa fa-plus" aria-hidden="true"></i> {{ "новый заказ"|capfirst }}</a>
+    <div class="container">
+        <div class="h2 text-center mt-5">
+            Ваши заказы, уважаемый
+            {% if user.first_name %}{{ user.first_name|title }}{% else %}{{ "пользователь"|capfirst }}{% endif %}
         </div>
-    </div>
-    <table class="table mt-4">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Создан</th>
-                <th>Обновлен</th>
-                <th>Статус</th>
-                <th colspan="3">Действия</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% if object_list %}
-            {% for item in object_list %}
-                {% if item.is_active %}
-                    <tr>
-                        <th scope="row">{{ item.pk }}</th>
-                        <td>{{ item.created|date:"Y-m-d H:i:s" }}</td>
-                        <td>{{ item.updated|date:"Y-m-d H:i:s" }}</td>
-                        <td>{{ item.get_status_display }}</td>
-                        {% comment %}
-                        <td><a href="{% url 'ordersapp:order_read' item.pk %}" data-toggle="tooltip" data-placement="top"
-                                title="Просмотр деталей"><i class="fa fa-list-alt" aria-hidden="true"></i></a></td>
-                        <td>
-                            {% if item.status == 'FM' %}
-                            <a href="{% url 'ordersapp:order_update' item.pk %}" data-toggle="tooltip" data-placement="top"
-                                title="Редактировать"><i class=" fa fa-pencil" aria-hidden="true"></i></a>
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% if item.status == 'FM' %}
-                            <a href="{% url 'ordersapp:order_delete' item.pk %}" data-toggle="tooltip" data-placement="top"
-                                title="Удалить"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
-                            {% endif %}
-                        </td>
-                        {% endcomment %}
-                    </tr>
-                {% endif %}
-            {% endfor %}
-        {% else %}
-            <tr><td colspan="5" class="text-center h4">Нет заказов</td></tr>
-        {% endif %}
-        </tbody>
-    </table>
-</div>
-{% endblock content %}
 
-{% block script %}
-<!--    <script src="{% static 'js/basket.js' %}"></script>-->
-{% endblock %}
+        <div class="row justify-content-end my-4">
+            <div class="col-2">
+                <a href="{% url 'orderapp:order_create' %}" class="btn btn-sm btn-outline-success col-12" role="button"><i
+                        class="fa fa-plus" aria-hidden="true"></i> {{ "новый заказ"|capfirst }}</a>
+            </div>
+        </div>
+
+        <table class="table mt-4">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Создан</th>
+                    <th>Обновлен</th>
+                    <th>Статус</th>
+                    <th colspan="3">Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if object_list %}
+                    {% for item in object_list %}
+                        {% if item.is_active %}
+                            <tr>
+                                <th scope="row">{{ item.pk }}</th>
+                                <td>{{ item.created|date:"Y-m-d H:i:s" }}</td>
+                                <td>{{ item.updated|date:"Y-m-d H:i:s" }}</td>
+                                <td>{{ item.get_status_display }}</td>
+                                <td>
+                                    <a href="{% url 'order:order_detail' item.pk %}" data-toggle="tooltip" data-placement="top"
+                                        title="Просмотр деталей"><i class="fa fa-list-alt" aria-hidden="true"></i></a>
+                                </td>
+                                <td>
+                                    {% if item.status == 'FM' %}
+                                    <a href="{% url 'order:order_edit' item.pk %}" data-toggle="tooltip" data-placement="top"
+                                        title="Редактировать"><i class=" fa fa-pencil" aria-hidden="true"></i></a>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a href="{% url 'order:order_delete' item.pk %}" data-toggle="tooltip" data-placement="top"
+                                        title="Удалить"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
+                                </td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    <tr><td colspan="5" class="text-center h4">Нет заказов</td></tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+{% endblock content %}

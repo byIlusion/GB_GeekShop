@@ -2,14 +2,18 @@ from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import user_passes_test
-from django.views.generic.list import ListView
-from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.utils.decorators import method_decorator
+# from django.forms import inlineformset_factory
+from django import forms
+from django.db import transaction
 
 from userapp.models import User
 from mainapp.models import ProductCategory, Product
 from basketapp.models import Basket
 from adminapp.forms import AdminUserCreate, AdminUserUpdate, AdminCategoryForm
+from orderapp.models import Order, OrderItem
+from orderapp.forms import OrderItemForm, OrderStatusForm
 
 
 @user_passes_test(lambda u: u.is_staff)
@@ -140,3 +144,53 @@ class BasketListView(ListView):
     @method_decorator(user_passes_test(lambda u: u.is_staff))
     def dispatch(self, request, *args, **kwargs):
         return super(BasketListView, self).dispatch(request, *args, **kwargs)
+
+
+class OrdersList(ListView):
+    model = Order
+    template_name = 'adminapp/orders_list.html'
+    extra_context = {'title': 'Заказы'}
+
+    def get_queryset(self):
+        return Order.objects.filter(is_active=True)
+
+
+class OrderUpdate(UpdateView):
+    model = Order
+    fields = []
+    template_name = 'adminapp/order_update.html'
+
+    def get_success_url(self):
+        self.success_url = reverse_lazy('admin_staff:order_update', args=[self.kwargs['pk']])
+        return str(self.success_url)
+
+    def get_context_data(self, **kwargs):
+        data = super(OrderUpdate, self).get_context_data(**kwargs)
+        OrderFormSet = forms.inlineformset_factory(Order, OrderItem, form=OrderItemForm, extra=0)
+        data['status_list'] = OrderStatusForm
+        data['status_list'].base_fields['status_list'].initial = data['object'].status
+        if self.request.POST:
+            data["orderitems"] = OrderFormSet(self.request.POST, instance=self.object)
+        else:
+            data["orderitems"] = OrderFormSet(instance=self.object)
+        return data
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        orderitems = context["orderitems"]
+
+        with transaction.atomic():
+            self.object = form.save()
+            if orderitems.is_valid():
+                orderitems.instance = self.object
+                orderitems.save()
+
+            if self.request.POST and 'status_list' in self.request.POST:
+                self.object.status = self.request.POST['status_list']
+                self.object.save()
+
+        # Delete empty order
+        if self.object.get_total_cost() == 0:
+            self.object.delete()
+
+        return super(OrderUpdate, self).form_valid(form)

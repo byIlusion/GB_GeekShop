@@ -8,7 +8,7 @@ class OrderForm(forms.ModelForm):
         model = Order
         exclude = ('user',)
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, optype, wsgroup, *args, **kwargs):
         super(OrderForm, self).__init__(*args, **kwargs)
         for name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control'
@@ -21,5 +21,15 @@ class OrderItemForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(OrderItemForm, self).__init__(*args, **kwargs)
+        for name, field in self.fields.items():
+            field.widget.attrs['class'] = 'form-control'
+        self.fields['quantity'].widget.attrs['min'] = 0
+
+
+class OrderStatusForm(forms.Form):
+    status_list = forms.ChoiceField(widget=forms.Select, choices=Order.ORDER_STATUS_CHOICES, label='Изменить статус заказа')
+
+    def __init__(self, *args, **kwargs):
+        super(OrderStatusForm, self).__init__(*args, **kwargs)
         for name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control'
