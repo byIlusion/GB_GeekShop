@@ -20,4 +20,7 @@ urlpatterns = [
     re_path(r'^products/$', adminapp.ProductListView.as_view(), name='products'),
 
     re_path(r'^baskets/$', adminapp.BasketListView.as_view(), name='baskets'),
+
+    re_path(r'^orders/$', adminapp.OrdersList.as_view(), name='orders_list'),
+    re_path(r'^order/update/(?P<pk>\d+)$', adminapp.OrderUpdate.as_view(), name='order_update'),
 ]

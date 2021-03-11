@@ -1,0 +1,41 @@
+{% extends 'mainapp/base.html' %}
+
+{% block content %}
+    <div class="container">
+        {% include 'orderapp/includes/inc_order_summary.html' %}
+
+        <h3 class="mt-4">Товары заказа</h3>
+        <table class="table mt-4">
+            <thead>
+                <tr>
+                    <th scope="col">Изображение</th>
+                    <th scope="col">Описание</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in object.orderitems.select_related %}
+                <tr>
+                    <td>
+                        <img src="{{ MEDIA_URL }}{{ item.product.image }}" alt="{{ item.product.short_description }}"
+                            style="min-width: 250px; max-width: 250px;">
+                    </td>
+                    <td>
+                        <div class="category_name"><label class="mr-2 text-muted"><b>Категория:</b></label>{{ item.product.category.name }}</div>
+                        <div class="product_name"><label class="mr-2 text-muted"><b>Наименование:</b></label>{{ item.product.name }}</div>
+                        <div class="product_price"><label class="mr-2 text-muted"><b>Цена:</b></label>{{ item.product.price }}&nbspруб</div>
+                        <div class="product_quantitiy"><label class="mr-2 text-muted"><b>Количество</b></label>{{ item.quantity }} шт.</div>
+                        <div class="product_cost">
+                            <label class="mr-2 text-muted"><b>Сумма:</b></label>
+                            <b>{{ item.get_total_cost }}&nbspруб</b>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="btn-group col-12 mt-2 mb-5" role="group">
+            {% include 'orderapp/includes/inc_order_actions.html' %}
+        </div>
+    </div>
+{% endblock content %}

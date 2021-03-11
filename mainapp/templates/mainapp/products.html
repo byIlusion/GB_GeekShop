@@ -63,6 +63,7 @@
                                         </h4>
                                         <h5>{{ product.price|floatformat:2 }} руб.</h5>
                                         <p class="card-text">{{ product.short_description }}</p>
+                                        <p>В наличии: {{ product.quantity }}</p>
                                     </div>
                                     <div class="card-footer text-center">
                                         <!--<button type="button" class="add-to-basket btn btn-outline-success" data-product="{{ product.id }}">Отправить в корзину</button>-->

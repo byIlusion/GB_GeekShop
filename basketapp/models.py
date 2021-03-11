@@ -17,13 +17,17 @@ class Basket(models.Model):
 
     @property
     def total_quantity(self):
-        basket = Basket.objects.filter(user=self.user)
+        basket = Basket.get_items(user=self.user)
         return Basket.basket_total_quantity(basket)
 
     @property
     def total_sum(self):
-        basket = Basket.objects.filter(user=self.user)
+        basket = Basket.get_items(user=self.user)
         return Basket.basket_total_sum(basket)
+
+    @staticmethod
+    def get_items(user):
+        return Basket.objects.filter(user=user).order_by('product__category')
 
     @staticmethod
     def basket_total_quantity(basket):
@@ -63,7 +67,7 @@ class Basket(models.Model):
         :param user: Объект пользователя
         :return: Словарь с Общим количество товаров и суммой всех этих товаров
         """
-        basket = Basket.objects.filter(user=user)
+        basket = Basket.get_items(user=user)
         return Basket.basket_totals(basket)
 
     @staticmethod

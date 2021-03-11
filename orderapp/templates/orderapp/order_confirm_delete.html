@@ -1,0 +1,21 @@
+{% extends 'mainapp/base.html' %}
+
+{% block content %}
+    <div class="container">
+        {% include 'orderapp/includes/inc_order_summary.html' %}
+        {{ var }}
+
+        <h3 class="mt-4">Вы уверены, что хотите удалить данный заказ?</h3>
+
+        <div class="mt-5 mb-5">
+            <form action="{% url 'order:order_delete' object.pk %}" method="post" class="row">
+                {% csrf_token %}
+                <div class="btn-group col-12" role="group">
+                    <a href="{{ request.META.HTTP_REFERER }}" class="btn btn-outline-secondary"
+                        role="button">{{ "отмена"|capfirst }}</a>
+                    <button type="submit" class="btn btn-outline-danger">{{ "удалить"|capfirst }}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock content %}

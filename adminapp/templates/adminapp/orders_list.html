@@ -1,0 +1,54 @@
+{% extends 'adminapp/base.html' %}
+
+{% block content %}
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-tshirt"></i>
+            {{ title }}
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                    <tr>
+                        <th>Пользователь</th>
+                        <th>Создан</th>
+                        <th>Товаров</th>
+                        <th>Сумма</th>
+                        <th>Статус</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tfoot>
+                    <tr>
+                        <th>Пользователь</th>
+                        <th>Создан</th>
+                        <th>Товаров</th>
+                        <th>Сумма</th>
+                        <th>Статус</th>
+                        <th></th>
+                    </tr>
+                    </tfoot>
+                    <tbody>
+                        {% if order_list %}
+                            {% for order in order_list %}
+                                <tr>
+                                    <td>{{ order.user.username }}</td>
+                                    <td>{{ order.created }}</td>
+                                    <td>{{ order.get_total_quantity }}</td>
+                                    <td>{{ order.get_total_cost }}</td>
+                                    <td>{{ order.status }}</td>
+                                    <td><a href="{% url 'admin_staff:order_update' order.pk %}" class="btn btn-primary">Редактировать</a></td>
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="6">Список пуст</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
