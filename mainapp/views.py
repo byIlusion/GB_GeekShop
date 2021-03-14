@@ -1,6 +1,8 @@
 from django.shortcuts import render, HttpResponseRedirect
 from django.core.paginator import Paginator
 from django.urls import reverse
+from django.http.response import JsonResponse
+from django.shortcuts import get_object_or_404
 from mainapp.models import ProductCategory, Product
 
 
@@ -34,3 +36,22 @@ def products(request, category_id=None):
         'category_id': category_id,
     }
     return render(request, 'mainapp/products.html', context=context)
+
+
+def product_info(request, product_id):
+    if request.is_ajax():
+        product_id = int(product_id)
+        product = get_object_or_404(Product, pk=product_id)
+        print(product.image)
+        result = {
+            'id': product.id,
+            'name': product.name,
+            'description': product.description,
+            'short_description': product.short_description,
+            'category_id': product.category.id,
+            'category_name': product.category.name,
+            'price': product.price,
+            'quantity': product.quantity,
+            'image': str(product.image),
+        }
+        return JsonResponse(result)
