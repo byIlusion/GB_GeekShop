@@ -4,21 +4,11 @@ from userapp.models import User
 from mainapp.models import Product
 
 
-class BasketQuerySet(models.QuerySet):
-    def delete(self, *args, **kwargs):
-        for object in self:
-            object.product.quantity += object.quantity
-            object.product.save()
-        super(BasketQuerySet, self).delete(*args, **kwargs)
-
-
 class Basket(models.Model):
     user = models.ForeignKey(User, verbose_name='ID пользователя', on_delete=models.CASCADE)
     product = models.ForeignKey(Product, verbose_name='ID товара', on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(verbose_name='Количество товара в корзине', default=0)
     create_timestamp = models.DateTimeField(verbose_name='Дата и время добавления товара в корзину', auto_now_add=True)
-
-    objects = BasketQuerySet.as_manager()
 
     def __str__(self):
         return f'{self.id}: Корзина пользователя {self.user.username} | Товар: {self.product.name} ({self.quantity} шт.)'
@@ -88,16 +78,3 @@ class Basket(models.Model):
     @staticmethod
     def get_all():
         return Basket.objects.all().order_by('-id')
-
-    def save(self, *args, **kwargs):
-        if self.pk:
-            self.product.quantity -= self.quantity - self.__class__.get_item(self.pk).quantity
-        else:
-            self.product.quantity -= self.quantity
-        self.product.save()
-        super(self.__class__, self).save(*args, **kwargs)
-
-    def delete(self):
-        self.product.quantity += self.quantity
-        self.product.save()
-        super(self.__class__, self).delete()

@@ -57,36 +57,13 @@ class Order(models.Model):
         return len(items)
 
 
-class OrderItemQuerySet(models.QuerySet):
-    def delete(self, *args, **kwargs):
-        for object in self:
-            object.product.quantity += object.quantity
-            object.product.save()
-        super(OrderItemQuerySet, self).delete(*args, **kwargs)
-
-
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, related_name='orderitems', on_delete=models.CASCADE)
     product = models.ForeignKey(Product, verbose_name='Товар', on_delete=models.CASCADE)
     quantity = models.IntegerField(verbose_name='Количество заказанного товара', default=0)
 
-    objects = OrderItemQuerySet.as_manager()
-
     def __str__(self):
         return f'Заказ: {self.order.pk}, товар: {self.product.pk}, количество: {self.quantity}'
-
-    def save(self, *args, **kwargs):
-        if self.pk:
-            self.product.quantity -= self.quantity - self.__class__.get_item(self.pk).quantity
-        else:
-            self.product.quantity -= self.quantity
-        self.product.save()
-        super(self.__class__, self).save(*args, **kwargs)
-
-    def delete(self):
-        self.product.quantity += self.quantity
-        self.product.save()
-        super(self.__class__, self).delete()
 
     @staticmethod
     def get_item(pk):
