@@ -35,7 +35,7 @@ class OrderCreate(CreateView):
                 for num, form in enumerate(formset.forms):
                     form.initial['product'] = basket[num].product
                     form.initial['quantity'] = basket[num].quantity
-                    form.fields['quantity'].widget.attrs['max'] = basket[num].product.quantity
+                    form.fields['quantity'].widget.attrs['max'] = basket[num].product.quantity + basket[num].quantity
             else:
                 formset = OrderFormSet()
 
