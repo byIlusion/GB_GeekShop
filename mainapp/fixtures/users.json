@@ -4,17 +4,19 @@
     "pk": 1,
     "fields": {
       "password": "pbkdf2_sha256$150000$FPi4Fsn51kdC$ezOC+QeFhANsf7D3xt4tQzQiWQ7p7VPJWjT6jaFaSlc=",
-      "last_login": "2021-02-12T14:04:11.140Z",
+      "last_login": "2021-03-10T17:55:17.661Z",
       "is_superuser": true,
       "username": "Ilusion",
       "first_name": "\u0418\u043b\u044c\u044f",
       "last_name": "\u041b\u044f\u043f\u0438\u043d",
-      "email": "",
+      "email": "by_ilusion@mail.ru",
       "is_staff": true,
       "is_active": true,
       "date_joined": "2021-01-30T05:47:43Z",
-      "avatar": "users_avatars/IMG_0139.JPG",
+      "avatar": "users_avatars/IMG_2570.jpg",
       "age": "1982-01-15",
+      "activation_key": "",
+      "activation_key_expires": "2021-03-04T09:40:00.205Z",
       "groups": [],
       "user_permissions": []
     }
@@ -35,6 +37,8 @@
       "date_joined": "2021-01-30T13:25:40Z",
       "avatar": "",
       "age": null,
+      "activation_key": "",
+      "activation_key_expires": "2021-03-04T09:40:00.205Z",
       "groups": [],
       "user_permissions": []
     }
@@ -55,6 +59,8 @@
       "date_joined": "2021-01-30T14:45:58Z",
       "avatar": "",
       "age": null,
+      "activation_key": "",
+      "activation_key_expires": "2021-03-04T09:40:00.205Z",
       "groups": [],
       "user_permissions": []
     }
@@ -75,8 +81,146 @@
       "date_joined": "2021-02-12T15:14:59.851Z",
       "avatar": "users_avatars/IMG_20180509_165057.jpg",
       "age": null,
+      "activation_key": "",
+      "activation_key_expires": "2021-03-04T09:40:00.205Z",
       "groups": [],
       "user_permissions": []
+    }
+  },
+  {
+    "model": "userapp.user",
+    "pk": 5,
+    "fields": {
+      "password": "pbkdf2_sha256$150000$v7CHrJY41Tgk$SMsaKasND0yVq1TdXVwYWYGeyVrQmWAyr6labNQWJ90=",
+      "last_login": "2021-03-03T17:44:40.319Z",
+      "is_superuser": false,
+      "username": "ili",
+      "first_name": "",
+      "last_name": "",
+      "email": "ili@mail.ru",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2021-03-03T17:31:50.294Z",
+      "avatar": "",
+      "age": null,
+      "activation_key": "e23efbd434b078fc855ee9c02d9a94041a2bbd71",
+      "activation_key_expires": "2021-03-04T17:31:14.319Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "userapp.user",
+    "pk": 7,
+    "fields": {
+      "password": "!ThAib1io8zIwHyhFW3H3se7L4tBvpTmkJHv7KUMe",
+      "last_login": "2021-03-10T19:47:39.993Z",
+      "is_superuser": false,
+      "username": "id39389858",
+      "first_name": "\u0418\u043b\u044c\u044f",
+      "last_name": "\u041b\u044f\u043f\u0438\u043d",
+      "email": "by_Ilusion@mail.ru",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2021-03-07T07:26:55.422Z",
+      "avatar": "",
+      "age": "1982-01-15",
+      "activation_key": "",
+      "activation_key_expires": "2021-03-08T07:26:49.279Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "userapp.user",
+    "pk": 8,
+    "fields": {
+      "password": "!FarmBvLZKvdHCBV3WsMsXxD0HfKuw4Giwk6IHZlY",
+      "last_login": "2021-03-10T19:47:49.371Z",
+      "is_superuser": false,
+      "username": "byIlusion",
+      "first_name": "Ilusion",
+      "last_name": "",
+      "email": "",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2021-03-07T09:24:54.890Z",
+      "avatar": "",
+      "age": null,
+      "activation_key": "",
+      "activation_key_expires": "2021-03-08T09:24:32.311Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "userapp.userprofile",
+    "pk": 1,
+    "fields": {
+      "user": 1,
+      "tagline": "",
+      "about": "\u041e \u0441\u0435\u0431\u0435",
+      "gender": "M"
+    }
+  },
+  {
+    "model": "userapp.userprofile",
+    "pk": 2,
+    "fields": {
+      "user": 2,
+      "tagline": "",
+      "about": "",
+      "gender": ""
+    }
+  },
+  {
+    "model": "userapp.userprofile",
+    "pk": 3,
+    "fields": {
+      "user": 3,
+      "tagline": "",
+      "about": "",
+      "gender": ""
+    }
+  },
+  {
+    "model": "userapp.userprofile",
+    "pk": 4,
+    "fields": {
+      "user": 4,
+      "tagline": "",
+      "about": "",
+      "gender": ""
+    }
+  },
+  {
+    "model": "userapp.userprofile",
+    "pk": 5,
+    "fields": {
+      "user": 5,
+      "tagline": "",
+      "about": "",
+      "gender": ""
+    }
+  },
+  {
+    "model": "userapp.userprofile",
+    "pk": 7,
+    "fields": {
+      "user": 7,
+      "tagline": "",
+      "about": "",
+      "gender": "M"
+    }
+  },
+  {
+    "model": "userapp.userprofile",
+    "pk": 8,
+    "fields": {
+      "user": 8,
+      "tagline": "",
+      "about": "",
+      "gender": "M"
     }
   }
 ]

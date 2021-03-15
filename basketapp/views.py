@@ -49,7 +49,10 @@ def basket_edit(request, basket_id, quantity):
             if quantity == 0:
                 item.delete()
             else:
-                item.quantity = quantity if quantity <= item.product.quantity else item.product.quantity
+                if quantity - Basket.get_item(item.pk).quantity <= item.product.quantity:
+                    item.quantity = quantity
+                else:
+                    item.quantity += item.product.quantity
                 item.save()
         context = {
             'basket': Basket.objects.filter(user=request.user)

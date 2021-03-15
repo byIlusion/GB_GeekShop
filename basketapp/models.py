@@ -1,4 +1,5 @@
 from django.db import models
+from django.shortcuts import get_object_or_404
 from userapp.models import User
 from mainapp.models import Product
 
@@ -28,6 +29,10 @@ class Basket(models.Model):
     @staticmethod
     def get_items(user):
         return Basket.objects.filter(user=user).order_by('product__category')
+
+    @staticmethod
+    def get_item(pk):
+        return get_object_or_404(Basket, pk=pk)
 
     @staticmethod
     def basket_total_quantity(basket):

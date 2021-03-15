@@ -2,7 +2,9 @@ from django.views.generic import ListView, CreateView, DetailView, UpdateView, D
 from django.forms import inlineformset_factory
 from django.urls import reverse_lazy, reverse
 from django.db import transaction
+from django.db.models.signals import pre_save, pre_delete
 from django.shortcuts import HttpResponseRedirect, get_object_or_404
+from django.dispatch import receiver
 
 from orderapp.models import Order, OrderItem
 from orderapp.forms import OrderItemForm
@@ -35,7 +37,8 @@ class OrderCreate(CreateView):
                 for num, form in enumerate(formset.forms):
                     form.initial['product'] = basket[num].product
                     form.initial['quantity'] = basket[num].quantity
-                    form.fields['quantity'].widget.attrs['max'] = basket[num].product.quantity
+                    form.fields['quantity'].widget.attrs['max'] = basket[num].product.quantity + basket[num].quantity
+                    form.initial['price'] = basket[num].product.price
             else:
                 formset = OrderFormSet()
 
@@ -47,13 +50,17 @@ class OrderCreate(CreateView):
         orderitems = context["orderitems"]
 
         with transaction.atomic():
+            """Очистку корзины перенес до сохранения заказа,
+                т.к. нужно сначала переместить количество из корзины в остаток товара,
+                а потом уже из остатка товара переместить в заказ.
+                Иначе падает в ошибку, т.к. количество товара не может быть отрицательным.
+            """
+            Basket.get_items(user=self.request.user).delete()
             form.instance.user = self.request.user
             self.object = form.save()
             if orderitems.is_valid():
                 orderitems.instance = self.object
                 orderitems.save()
-
-            Basket.get_items(user=self.request.user).delete()
 
         if self.object.get_total_cost() == 0:
             self.object.delete()
@@ -81,7 +88,11 @@ class OrderEdit(UpdateView):
         if self.request.POST:
             data["orderitems"] = OrderFormSet(self.request.POST, instance=self.object)
         else:
-            data["orderitems"] = OrderFormSet(instance=self.object)
+            formset = OrderFormSet(instance=self.object)
+            for form in formset.forms:
+                if form.instance.pk:
+                    form.initial['price'] = form.instance.product.price
+            data["orderitems"] = formset
         return data
 
     def form_valid(self, form):
@@ -111,3 +122,20 @@ def order_forming_complete(request, pk):
     order.status = Order.SENT_TO_PROCEED
     order.save()
     return HttpResponseRedirect(reverse('order:orders_list'))
+
+
+@receiver(pre_save, sender=OrderItem)
+@receiver(pre_save, sender=Basket)
+def product_quantity_update_with_save(instance, sender, **kwargs):
+    if instance.pk:
+        instance.product.quantity -= instance.quantity - sender.get_item(pk=instance.pk).quantity
+    else:
+        instance.product.quantity -= instance.quantity
+    instance.product.save()
+
+
+@receiver(pre_delete, sender=OrderItem)
+@receiver(pre_delete, sender=Basket)
+def product_quantity_update_with_delete(instance, **kwargs):
+    instance.product.quantity += instance.quantity
+    instance.product.save()
