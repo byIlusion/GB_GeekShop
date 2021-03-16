@@ -104,7 +104,7 @@ else:
             'ENGINE': 'django.db.backends.postgresql',
             'USER': 'django',
             'PASSWORD': 'geekbrains',
-            'HOST': 'lovalhost',
+            'HOST': 'localhost',
         }
     }
 
