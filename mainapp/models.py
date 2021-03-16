@@ -20,3 +20,10 @@ class Product(models.Model):
 
     def __str__(self):
         return f'{self.id}: {self.name} ({self.category.name})'
+
+    @staticmethod
+    def get_items(category_id=None):
+        if category_id is not None:
+            return Product.objects.filter(quantity__gt=0, category_id=category_id)
+        else:
+            return Product.objects.filter(quantity__gt=0)

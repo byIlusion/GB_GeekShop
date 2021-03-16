@@ -186,15 +186,21 @@ AUTHENTICATION_BACKENDS = (
 
 SOCIAL_AUTH_URL_NAMESPACE = "social"
 
-with open('secrets/vk.json', 'r') as f:
-    VK = json.load(f)
-SOCIAL_AUTH_VK_OAUTH2_KEY = VK["SOCIAL_AUTH_VK_OAUTH2_APPID"]
-SOCIAL_AUTH_VK_OAUTH2_SECRET = VK["SOCIAL_AUTH_VK_OAUTH2_KEY"]
+try:
+    with open('secrets/vk.json', 'r') as f:
+        VK = json.load(f)
+    SOCIAL_AUTH_VK_OAUTH2_KEY = VK["SOCIAL_AUTH_VK_OAUTH2_APPID"]
+    SOCIAL_AUTH_VK_OAUTH2_SECRET = VK["SOCIAL_AUTH_VK_OAUTH2_KEY"]
+except Exception as exp:
+    print('Settings loading filed: %s' % (exp))
 
-with open('secrets/github.json', 'r') as f:
-    GITHUB = json.load(f)
-SOCIAL_AUTH_GITHUB_KEY = GITHUB["SOCIAL_AUTH_GITHUB_KEY"]
-SOCIAL_AUTH_GITHUB_SECRET = GITHUB["SOCIAL_AUTH_GITHUB_SECRET"]
+try:
+    with open('secrets/github.json', 'r') as f:
+        GITHUB = json.load(f)
+    SOCIAL_AUTH_GITHUB_KEY = GITHUB["SOCIAL_AUTH_GITHUB_KEY"]
+    SOCIAL_AUTH_GITHUB_SECRET = GITHUB["SOCIAL_AUTH_GITHUB_SECRET"]
+except Exception as exp:
+    print('Settings loading filed: %s' % (exp))
 
 LOGIN_ERROR_URL = "/"
 
