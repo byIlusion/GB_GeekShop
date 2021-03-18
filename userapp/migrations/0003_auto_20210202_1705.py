@@ -10,9 +10,19 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AlterField(
+        migrations.RemoveField(
+            model_name='user',
+            name='age'
+        ),
+        # migrations.AlterField(
+        #     model_name='user',
+        #     name='age',
+        #     field=models.DateField(blank=True, null=True, verbose_name='Дата рождения'),
+        # ),
+        migrations.AddField(
             model_name='user',
             name='age',
             field=models.DateField(blank=True, null=True, verbose_name='Дата рождения'),
         ),
+
     ]
