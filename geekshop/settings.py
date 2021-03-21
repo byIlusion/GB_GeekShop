@@ -52,6 +52,7 @@ if DEBUG:
     INSTALLED_APPS.extend([
         'debug_toolbar',
         'template_profiler_panel',
+        'django_extensions',
     ])
 
 AUTH_USER_MODEL = 'userapp.User'
@@ -254,6 +255,10 @@ if DEBUG:
     DEBUG_TOOLBAR_CONFIG = {
         "SHOW_TOOLBAR_CALLBACK": show_toolbar,
     }
+
+    # Панель отказывалась появляться из-за ошибки подгрузки toolbar.js
+    import mimetypes
+    mimetypes.add_type("application/javascript", ".js", True)
 
     DEBUG_TOOLBAR_PANELS = [
         # "ddt_request_history.panels.request_history.RequestHistoryPanel",
