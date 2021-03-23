@@ -5,20 +5,21 @@ from django.db import transaction
 from django.db.models.signals import pre_save, pre_delete
 from django.shortcuts import HttpResponseRedirect, get_object_or_404
 from django.dispatch import receiver
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from orderapp.models import Order, OrderItem
 from orderapp.forms import OrderItemForm
 from basketapp.models import Basket
 
 
-class OrderList(ListView):
+class OrderList(LoginRequiredMixin, ListView):
     model = Order
 
     def get_queryset(self):
         return Order.objects.filter(user=self.request.user)
 
 
-class OrderCreate(CreateView):
+class OrderCreate(LoginRequiredMixin, CreateView):
     model = Order
     fields = []
     success_url = reverse_lazy('order:orders_list')
@@ -88,7 +89,8 @@ class OrderEdit(UpdateView):
         if self.request.POST:
             data["orderitems"] = OrderFormSet(self.request.POST, instance=self.object)
         else:
-            formset = OrderFormSet(instance=self.object)
+            queryset = self.object.orderitems.select_related()
+            formset = OrderFormSet(instance=self.object, queryset=queryset)
             for form in formset.forms:
                 if form.instance.pk:
                     form.initial['price'] = form.instance.product.price

@@ -15,7 +15,7 @@ class Product(models.Model):
     description = models.TextField(verbose_name='Описание товара', blank=True)
     category = models.ForeignKey(ProductCategory, verbose_name='ID категории', on_delete=models.CASCADE)
     price = models.DecimalField(verbose_name='Стоимость', max_digits=10, decimal_places=2, default=0)
-    quantity = models.PositiveIntegerField(verbose_name='Количество товара', default=0)
+    quantity = models.PositiveIntegerField(verbose_name='Количество товара', default=0, db_index=True)
     image = models.ImageField(verbose_name='Путь до изображения товара', upload_to='products_images', blank=True)
 
     def __str__(self):
