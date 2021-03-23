@@ -19,7 +19,7 @@ class Product(models.Model):
     image = models.ImageField(verbose_name='Путь до изображения товара', upload_to='products_images', blank=True)
     
     def __str__(self):
-        # return f'{self.id}: {self.name} ({self.category.name})'
+        return f'{self.id}: {self.name} ({self.category.name})'
 
     @staticmethod
     def get_items(category_id=None):
