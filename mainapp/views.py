@@ -4,6 +4,7 @@ from django.urls import reverse
 from django.http.response import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.core.cache import cache
+# from django.views.decorators.cache import cache_page
 
 from mainapp.models import ProductCategory, Product
 
@@ -16,6 +17,7 @@ class Fact(object):
         return fact
 
 
+# @cache_page(600)
 def main(request):
     context = {
         'title': 'GeekShop. главная',
