@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.db import models
 from django.shortcuts import get_object_or_404
+from django.utils.functional import cached_property
 
 from mainapp.models import Product
 
@@ -44,17 +45,27 @@ class Order(models.Model):
         self.is_active = False
         self.save()
 
+    @property
     def get_total_quantity(self):
-        items = self.orderitems.select_related()
+        # items = self.orderitems.select_related()
+        items = self.get_items_cached
         return sum(list(map(lambda x: x.quantity, items)))
 
+    @property
     def get_total_cost(self):
-        items = self.orderitems.select_related()
+        # items = self.orderitems.select_related()
+        items = self.get_items_cached
         return sum(list(map(lambda x: x.get_total_cost(), items)))
 
+    @property
     def get_products_quantity(self):
-        items = self.orderitems.select_related()
+        # items = self.orderitems.select_related()
+        items = self.get_items_cached
         return len(items)
+    
+    @cached_property
+    def get_items_cached(self):
+        return self.orderitems.select_related()
 
 
 class OrderItem(models.Model):
