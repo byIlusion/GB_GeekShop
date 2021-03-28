@@ -59,7 +59,7 @@ def get_categories():
     key = 'categories'
     categories = cache.get(key)
     if categories is None:
-        categories = ProductCategory.objects.all()
+        categories = ProductCategory.objects.filter(is_active=True)
         cache.set(key, categories)
     return categories
 

@@ -6,7 +6,9 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.utils.decorators import method_decorator
 # from django.forms import inlineformset_factory
 from django import forms
-from django.db import transaction
+from django.db import transaction, connection
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
 
 from userapp.models import User
 from mainapp.models import ProductCategory, Product
@@ -194,3 +196,10 @@ class OrderUpdate(UpdateView):
             self.object.delete()
 
         return super(OrderUpdate, self).form_valid(form)
+
+
+@receiver(pre_save, sender=ProductCategory)
+def product_update_isActive_by_category_save(sender, instance, **kwargs):
+    if instance.pk:
+        instance.product_set.update(is_active=instance.is_active)
+
