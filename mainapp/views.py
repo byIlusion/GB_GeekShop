@@ -32,10 +32,12 @@ def products(request, category_id=None):
         key = f'products_{category_id}'
     else:
         key = 'products'
-    product_list = cache.get(key)
+    # Кэш отключил, т.к. на локальном компьютере очень медлено
+    # product_list = cache.get(key)
+    product_list = None
     if product_list is None:
         product_list = Product.get_items(category_id=category_id)
-        cache.set(key, product_list)
+        # cache.set(key, product_list)
 
     per_page = 3
     if 'page' in request.GET and int(request.GET['page']) == 1:
@@ -57,10 +59,11 @@ def products(request, category_id=None):
 
 def get_categories():
     key = 'categories'
-    categories = cache.get(key)
-    if categories is None:
-        categories = ProductCategory.objects.filter(is_active=True)
-        cache.set(key, categories)
+    categories = ProductCategory.objects.filter(is_active=True)
+    # categories = cache.get(key)
+    # if categories is None:
+    #     categories = ProductCategory.objects.filter(is_active=True)
+    #     cache.set(key, categories)
     return categories
 
 
