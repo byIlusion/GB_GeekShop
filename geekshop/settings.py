@@ -50,8 +50,8 @@ INSTALLED_APPS = [
 
 if DEBUG:
     INSTALLED_APPS.extend([
-        'debug_toolbar',
-        'template_profiler_panel',
+        # 'debug_toolbar',
+        # 'template_profiler_panel',
         'django_extensions',
     ])
 
@@ -70,10 +70,10 @@ MIDDLEWARE = [
     # "django.middleware.cache.FetchFromCacheMiddleware",  # for entire site caching
 ]
 
-if DEBUG:
-    MIDDLEWARE.extend([
-        'debug_toolbar.middleware.DebugToolbarMiddleware',
-    ])
+# if DEBUG:
+#     MIDDLEWARE.extend([
+#         'debug_toolbar.middleware.DebugToolbarMiddleware',
+#     ])
 
 ROOT_URLCONF = 'geekshop.urls'
 
@@ -248,36 +248,36 @@ SOCIAL_AUTH_PIPELINE = (
 )
 
 # Debug tool bar settings
-if DEBUG:
-
-    def show_toolbar(request):
-        return True
-
-    DEBUG_TOOLBAR_CONFIG = {
-        "SHOW_TOOLBAR_CALLBACK": show_toolbar,
-    }
-
-    # Панель отказывалась появляться из-за ошибки подгрузки toolbar.js
-    import mimetypes
-    mimetypes.add_type("application/javascript", ".js", True)
-
-    DEBUG_TOOLBAR_PANELS = [
-        # "ddt_request_history.panels.request_history.RequestHistoryPanel",
-        "debug_toolbar.panels.versions.VersionsPanel",
-        "debug_toolbar.panels.timer.TimerPanel",
-        "debug_toolbar.panels.settings.SettingsPanel",
-        "debug_toolbar.panels.headers.HeadersPanel",
-        "debug_toolbar.panels.request.RequestPanel",
-        "debug_toolbar.panels.sql.SQLPanel",
-        "debug_toolbar.panels.templates.TemplatesPanel",
-        "debug_toolbar.panels.staticfiles.StaticFilesPanel",
-        "debug_toolbar.panels.cache.CachePanel",
-        "debug_toolbar.panels.signals.SignalsPanel",
-        "debug_toolbar.panels.logging.LoggingPanel",
-        "debug_toolbar.panels.redirects.RedirectsPanel",
-        "debug_toolbar.panels.profiling.ProfilingPanel",
-        "template_profiler_panel.panels.template.TemplateProfilerPanel",
-    ]
+# if DEBUG:
+#
+#     def show_toolbar(request):
+#         return True
+#
+#     DEBUG_TOOLBAR_CONFIG = {
+#         "SHOW_TOOLBAR_CALLBACK": show_toolbar,
+#     }
+#
+#     # Панель отказывалась появляться из-за ошибки подгрузки toolbar.js
+#     import mimetypes
+#     mimetypes.add_type("application/javascript", ".js", True)
+#
+#     DEBUG_TOOLBAR_PANELS = [
+#         # "ddt_request_history.panels.request_history.RequestHistoryPanel",
+#         "debug_toolbar.panels.versions.VersionsPanel",
+#         "debug_toolbar.panels.timer.TimerPanel",
+#         "debug_toolbar.panels.settings.SettingsPanel",
+#         "debug_toolbar.panels.headers.HeadersPanel",
+#         "debug_toolbar.panels.request.RequestPanel",
+#         "debug_toolbar.panels.sql.SQLPanel",
+#         "debug_toolbar.panels.templates.TemplatesPanel",
+#         "debug_toolbar.panels.staticfiles.StaticFilesPanel",
+#         "debug_toolbar.panels.cache.CachePanel",
+#         "debug_toolbar.panels.signals.SignalsPanel",
+#         "debug_toolbar.panels.logging.LoggingPanel",
+#         "debug_toolbar.panels.redirects.RedirectsPanel",
+#         "debug_toolbar.panels.profiling.ProfilingPanel",
+#         "template_profiler_panel.panels.template.TemplateProfilerPanel",
+#     ]
 
 # Memcached
 CACHE_MIDDLEWARE_ALIAS = "default"

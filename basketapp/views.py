@@ -13,8 +13,8 @@ from basketapp.models import Basket
 
 @login_required
 def basket_add(request, product_id=None):
-    if 'login' in request.META.get('HTTP_REFERER'):
-        return HttpResponseRedirect(reverse('mainapp:index'))
+    # if 'login' in request.META.get('HTTP_REFERER'):
+    #     return HttpResponseRedirect(reverse('mainapp:index'))
 
     if product_id:
         product_id = int(product_id)
