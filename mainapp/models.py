@@ -26,6 +26,6 @@ class Product(models.Model):
     @staticmethod
     def get_items(category_id=None):
         if category_id is not None:
-            return Product.objects.filter(quantity__gt=0, category_id=category_id, is_active=True)
+            return Product.objects.filter(quantity__gt=0, category_id=category_id, is_active=True).order_by('id')
         else:
-            return Product.objects.filter(quantity__gt=0, is_active=True)
+            return Product.objects.filter(quantity__gt=0, is_active=True).order_by('id')

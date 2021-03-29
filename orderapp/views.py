@@ -11,6 +11,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from orderapp.models import Order, OrderItem
 from orderapp.forms import OrderItemForm
 from basketapp.models import Basket
+from mainapp.models import Product
 
 
 class OrderList(LoginRequiredMixin, ListView):

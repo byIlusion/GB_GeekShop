@@ -4,11 +4,11 @@ from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import user_passes_test
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.utils.decorators import method_decorator
-# from django.forms import inlineformset_factory
 from django import forms
 from django.db import transaction, connection
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
+from django.db.models import F
 
 from userapp.models import User
 from mainapp.models import ProductCategory, Product
@@ -22,6 +22,12 @@ from orderapp.forms import OrderItemForm, OrderStatusForm
 def index(request):
     context = {'title': 'Административная панель'}
     return render(request, 'adminapp/index.html', context)
+
+
+def db_profile_by_type(prefix, type, queries):
+    update_queries = list(filter(lambda x: type in x["sql"], queries))
+    print(f"db_profile {type} for {prefix}:")
+    [print(query["sql"]) for query in update_queries]
 
 
 class UsersListView(ListView):
@@ -112,6 +118,15 @@ class CategoryUpdateView(UpdateView):
             'action': reverse_lazy('adminapp:category_update', args=[self.kwargs['pk']]),
         })
         return context
+
+    def form_valid(self, form):
+        if 'discount' in form.cleaned_data:
+            discount = form.cleaned_data['discount']
+            if discount != 0:
+                print(f'Применяется скидка {discount}% к товарам категории {self.object.name}')
+                self.object.product_set.update(price=F('price') * (1 - discount/100))
+                # db_profile_by_type(self.__class__, "UPDATE", connection.queries)
+        return super(CategoryUpdateView, self).form_valid(form)
 
     @method_decorator(user_passes_test(lambda u: u.is_staff))
     def dispatch(self, request, *args, **kwargs):
