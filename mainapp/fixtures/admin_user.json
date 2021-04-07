@@ -1,0 +1,24 @@
+[
+  {
+    "model": "userapp.user",
+    "pk": 1,
+    "fields": {
+      "password": "pbkdf2_sha256$150000$FPi4Fsn51kdC$ezOC+QeFhANsf7D3xt4tQzQiWQ7p7VPJWjT6jaFaSlc=",
+      "last_login": "2021-03-28T16:11:09.797Z",
+      "is_superuser": true,
+      "username": "Ilusion",
+      "first_name": "\u0418\u043b\u044c\u044f",
+      "last_name": "\u041b\u044f\u043f\u0438\u043d",
+      "email": "by_ilusion@mail.ru",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2021-01-30T05:47:43Z",
+      "avatar": "users_avatars/IMG_2570.jpg",
+      "age": "1982-01-15",
+      "activation_key": "",
+      "activation_key_expires": "2021-03-04T09:40:00.205Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  }
+]

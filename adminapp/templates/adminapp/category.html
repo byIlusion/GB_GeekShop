@@ -11,6 +11,14 @@
             <label class="small mb-1" for="{{ form.description.id_for_label }}">{{ form.description.label }}</label>
             {{ form.description }}
         </div>
+        <div class="col-lg-12">
+            <label class="small mb-1" for="{{ form.is_active.id_for_label }}">{{ form.is_active.label }}</label>
+            {{ form.is_active }}
+        </div>
+        <div class="col-lg-12">
+            <label class="small mb-1" for="{{ form.discount.id_for_label }}">{{ form.discount.label }}</label>
+            {{ form.discount }}
+        </div>
         <div class="form-row">
             {% if is_update %}
                 <div class="col-lg-12" style="margin-top: 33px;">

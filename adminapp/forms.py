@@ -28,13 +28,16 @@ class AdminUserUpdate(userapp.UserEditForm):
 
 
 class AdminCategoryForm(forms.ModelForm):
+    discount = forms.IntegerField(label='Применить скидку', required=False, min_value=0, max_value=90, initial=0)
+
     class Meta:
         model = ProductCategory
-        fields = ('name', 'description')
+        fields = ('name', 'description', 'is_active')
     
     def __init__(self, *args, **kwargs):
         super(AdminCategoryForm, self).__init__(*args, **kwargs)
         self.fields['name'].widget.attrs['placeholder'] = 'Введите название категории'
         self.fields['description'].widget.attrs['placeholder'] = 'Описание категории'
         for name, field in self.fields.items():
-            field.widget.attrs['class'] = 'form-control py-4'
+            if name != 'is_active':
+                field.widget.attrs['class'] = 'form-control py-4'

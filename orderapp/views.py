@@ -2,6 +2,7 @@ from django.views.generic import ListView, CreateView, DetailView, UpdateView, D
 from django.forms import inlineformset_factory
 from django.urls import reverse_lazy, reverse
 from django.db import transaction
+from django.db.models import F
 from django.db.models.signals import pre_save, pre_delete
 from django.shortcuts import HttpResponseRedirect, get_object_or_404
 from django.dispatch import receiver
@@ -10,6 +11,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from orderapp.models import Order, OrderItem
 from orderapp.forms import OrderItemForm
 from basketapp.models import Basket
+from mainapp.models import Product
 
 
 class OrderList(LoginRequiredMixin, ListView):
@@ -130,14 +132,14 @@ def order_forming_complete(request, pk):
 @receiver(pre_save, sender=Basket)
 def product_quantity_update_with_save(instance, sender, **kwargs):
     if instance.pk:
-        instance.product.quantity -= instance.quantity - sender.get_item(pk=instance.pk).quantity
+        instance.product.quantity = F("quantity") - (instance.quantity - sender.get_item(instance.pk).quantity)
     else:
-        instance.product.quantity -= instance.quantity
+        instance.product.quantity = F("quantity") - instance.quantity
     instance.product.save()
 
 
 @receiver(pre_delete, sender=OrderItem)
 @receiver(pre_delete, sender=Basket)
 def product_quantity_update_with_delete(instance, **kwargs):
-    instance.product.quantity += instance.quantity
+    instance.product.quantity = F("quantity") + instance.quantity
     instance.product.save()
